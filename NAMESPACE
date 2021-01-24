@@ -1,0 +1,3 @@
+useDynLib(l01segmentation, .registration=TRUE)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)
