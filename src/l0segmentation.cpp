@@ -153,18 +153,6 @@ void flood(const double & threshold, const SqrtErr * in, const int & in_len, Sqr
     addSeg(out,out_len,inf,0,0,neginf,max_seg_length);
 }
 
-void printRang(const double * ranges, const int * range_inds, const int & range_inds_len){
-        for(int i=0; i<range_inds_len; i++){
-                    std::cout << "Range " << i << ": ";
-                            for(int j = 2*range_inds[i]; j < 2*range_inds[i+1]; j++){
-                                            if (ranges[j] == inf) std::cout << "inf, ";
-                                                        else if (ranges[j] == neginf) std::cout << "-inf, ";
-                                                                    else std::cout << ranges[j] << ", ";
-                                                                            }
-                                    std::cout << std::endl;
-                                        }
-}
-
 // [[Rcpp::export]]
 NumericVector L0SqrtErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue, int max_seg_length=3000, int average_range_length=6) {
     int N = y.size();
@@ -215,7 +203,6 @@ NumericVector L0SqrtErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVe
         flood(mprime-l2[i-1], d, d_len, f, f_len, ranges, range_inds, range_inds_len, max_seg_length, max_range_length);
         funcAdd(d, d_len, f, f_len, y[i], weights[i]);
     }
-    printRang(ranges,range_inds,range_inds_len);
 
     maximize(d, d_len, bstar[N-1], mprime);
     backtrace(bstar, ranges, range_inds, range_inds_len, sol);
