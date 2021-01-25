@@ -54,7 +54,7 @@ void funcAdd(SqrtErr * d, int & d_len, SqrtErr * f, int & f_len, const double & 
 
 void addRange(double * ranges, const double & val, int & ii, const int & max){
     if (ii+1 > max){
-        stop("Range buffer is not big enough. Set average_range_length to a bigger value (Right now %d).",max);
+        stop("Range buffer is not big enough. Set average_range_length to a bigger value (Possibly to some value between 5-7).");
     }
     ranges[ii] = val;
     ii += 1;
@@ -139,7 +139,7 @@ void flood(const double & threshold, const SqrtErr * in, const int & in_len, Sqr
         else if (!underwater){
             addSeg(out,out_len,(in+i)->knot,(in+i)->coef1,(in+i)->coef2,(in+i)->constant,max_seg_length);
         }
-        if (!underwater && solution_exists && right < (in+i+1)->knot && right > (in+i)->knot){
+        if (!underwater && solution_exists && right < (in+i+1)->knot && right > (in)->knot){
             addSeg(out,out_len,right,0,0,threshold,max_seg_length);
             addRange(ranges,right,ii,max_range_length);
             underwater = true;
@@ -154,7 +154,7 @@ void flood(const double & threshold, const SqrtErr * in, const int & in_len, Sqr
 }
 
 // [[Rcpp::export]]
-NumericVector L0SqrtErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue, int max_seg_length=3000, int average_range_length=6) {
+NumericVector L0SqrtErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue, int max_seg_length=3000, int average_range_length=4) {
     int N = y.size();
 
     if (l2.size() == 1){
@@ -185,7 +185,7 @@ NumericVector L0SqrtErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVe
     SqrtErr * f = new SqrtErr[max_seg_length];
     int f_len = 0, d_len = 0;
 
-    int max_range_length = average_range_length*(N+1);
+    int max_range_length = average_range_length*(N+1)+100;
     double * ranges = new double[max_range_length];
     int * range_inds = new int[N];
     int range_inds_len = 0;
@@ -217,20 +217,3 @@ NumericVector L0SqrtErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVe
     delete[] sol;
     return z;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
