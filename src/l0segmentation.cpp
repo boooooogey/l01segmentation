@@ -185,7 +185,7 @@ NumericVector L0SqrtErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVe
     SqrtErr * f = new SqrtErr[max_seg_length];
     int f_len = 0, d_len = 0;
 
-    int max_range_length = average_range_length*(N+1)+100;
+    int max_range_length = (average_range_length+1)*N;
     double * ranges = new double[max_range_length];
     int * range_inds = new int[N];
     int range_inds_len = 0;
