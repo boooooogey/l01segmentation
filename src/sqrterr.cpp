@@ -262,6 +262,20 @@ NumericVector L0SqrtErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVe
     return z;
 }
 
+// [[Rcpp::export]]
+IntegerVector L0SqrtErrBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue, int max_seg_length=3000, int average_range_length=4) {
+    NumericVector z = L0SqrtErrSeg(y, l2, w, max_seg_length, average_range_length);
+    IntegerVector ii(z.size());
+    int N = 0;
+    for(int i = 0; i < z.size()-1; i++){
+        if( z[i] != z[i+1]){
+            ii[N] = i+1;
+            N++;
+        }
+    }
+    return IntegerVector(ii.begin(),ii.begin()+N);
+}
+
 double clip(const double & x, const double & up, const double & low){
     if (x > up) return up;
     else if (x < low) return low;
