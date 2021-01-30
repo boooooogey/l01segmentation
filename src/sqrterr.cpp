@@ -200,7 +200,7 @@ void flood(const double & threshold, const SqrtErr * in, const int & in_len, Sqr
 }
 
 // [[Rcpp::export]]
-NumericVector L0SqrtErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue, int max_seg_length=3000, int average_range_length=4) {
+List L0SqrtErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue, int max_seg_length=3000, int average_range_length=4) {
     int N = y.size();
 
     if (l2.size() == 1){
@@ -259,12 +259,13 @@ NumericVector L0SqrtErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVe
     delete[] ranges;
     delete[] range_inds;
     delete[] bstar;
-    return z;
+    return List::create(Named("x") = z, Named("maxval") = mprime);
 }
 
 // [[Rcpp::export]]
 IntegerVector L0SqrtErrBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue, int max_seg_length=3000, int average_range_length=4) {
-    NumericVector z = L0SqrtErrSeg(y, l2, w, max_seg_length, average_range_length);
+    List out  = L0SqrtErrSeg(y, l2, w, max_seg_length, average_range_length);
+    NumericVector z = out["x"];
     IntegerVector ii(z.size());
     int N = 0;
     for(int i = 0; i < z.size()-1; i++){
