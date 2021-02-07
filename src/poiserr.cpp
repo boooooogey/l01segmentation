@@ -160,28 +160,6 @@ void maximize(const PoisErr * f, const int & len, double & bprime, double & mpri
     }
 }
 
-void printSeg(const PoisErr & f){
-        if (f.knot == inf) std::cout << "x = inf, ";
-            else if (f.knot == neginf) std::cout << "x = -inf, ";
-                else std::cout << "x = " << f.knot << ", ";
-                    if (f.constant == inf) std::cout << "c = inf, ";
-                        else if (f.constant == neginf) std::cout << "c = -inf, ";
-                            else std::cout << "c = " << f.constant << ", ";
-                                if (f.coef1 == inf) std::cout << "coefficient1 = inf, ";
-                                    else if (f.coef1 == neginf) std::cout << "coefficient1 = -inf, ";
-                                        else std::cout << "coefficient1 = " << f.coef1 << ", ";
-                                            if (f.coef2 == inf) std::cout << "coefficient2 = inf, ";
-                                                else if (f.coef2 == neginf) std::cout << "coefficient2 = -inf, ";
-                                                    else std::cout << "coefficient2 = " << f.coef2 << std::endl;
-}
-
-void printFunc(const PoisErr * f, const int & len){
-        for(int i = 0; i < len-1; i++){
-                    std::cout << i << ": ";
-                            printSeg(f[i]);
-                                }
-}
-
 void flood(const double & threshold, const PoisErr * in, const int & in_len, PoisErr * out, int & out_len, double * ranges, int * range_inds, int & range_inds_len, const int & max_seg_length, const int & max_range_length){
     bool underwater = true, solution_exists;
     double tol = 1e-9;
@@ -197,11 +175,6 @@ void flood(const double & threshold, const PoisErr * in, const int & in_len, Poi
     }
     for (int i=0; i < in_len-1; i++){
         solution_exists = segSolve((in+i), threshold, left, right);
-        //if (!solution_exists){
-        //    std::cout << "step = " << i << std::endl;
-        //    std::cout << "water level = " << threshold << std::endl;
-        //    printFunc(in, in_len);
-        //}
         if (underwater && solution_exists && left < (in+i+1)->knot && left > (in+i)->knot - tol){
             addSeg(out,out_len,left,(in+i)->coef1,(in+i)->coef2,(in+i)->constant,max_seg_length);
             addRange(ranges,left,ii,max_range_length);
@@ -279,14 +252,8 @@ List L0PoisErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w =
     addSeg(d, d_len, inf, 0, 0, neginf, max_seg_length);
 
     for(int i = 1; i < N; i++){
-        //std::cout << i << ": " << std::endl;
-        //std::cout << "d: " << std::endl;
-        //printFunc(d,d_len);
         maximize(d, d_len, bstar[i-1], mprime);
-        //std::cout << "maximum = (" << bstar[i-1] << ", " << mprime << ")" << std::endl;
         flood(mprime-l2[i-1], d, d_len, f, f_len, ranges, range_inds, range_inds_len, max_seg_length, max_range_length);
-        //std::cout << "f: " << std::endl;
-        //printFunc(f,f_len);
         funcAdd(d, d_len, f, f_len, y[i], weights[i]);
     }
 
