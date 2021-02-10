@@ -2,14 +2,10 @@
 
 #include <Rcpp.h>
 #include <math.h>
-#include <limits>
-#include <iostream>
+#include "util.h"
 #include <boost/math/special_functions/lambert_w.hpp>
 
 using namespace Rcpp;
-
-double inf = std::numeric_limits<double>::max();
-double neginf = -inf;
 
 struct PoisErr{
     double knot; 
@@ -95,14 +91,6 @@ void funcAdd(PoisErr * d, int & d_len, PoisErr * f, int & f_len, const double & 
     f_len = 0;
 }
 
-void addRange(double * ranges, const double & val, int & ii, const int & max){
-    if (ii+1 > max){
-        stop("Range buffer is not big enough. Set average_range_length to a bigger value (Possibly to some value between 5-7).");
-    }
-    ranges[ii] = val;
-    ii += 1;
-}
-
 bool segSolve(const PoisErr * f, const double & t, double & left, double & right){
     using boost::math::lambert_w0;
     using boost::math::lambert_wm1;
@@ -123,22 +111,6 @@ bool segSolve(const PoisErr * f, const double & t, double & left, double & right
         right = tmp;
     }
     return true;
-}
-
-void backtrace(const double * bstar, const double * ranges, const int * range_inds, const int & range_inds_len, double * sol){
-    sol[range_inds_len] = bstar[range_inds_len];
-    int s, e;
-    for (int i = range_inds_len-1; i > -1; i--){
-        s = range_inds[i]; 
-        e = range_inds[i+1];
-        sol[i] = sol[i+1];
-        for (int j = s; j < e; j++){
-            if (ranges[2*j] <= sol[i+1] && ranges[2*j+1] >= sol[i+1]){
-                sol[i] = bstar[i];
-                break;
-            }
-        }
-    }
 }
 
 void maximize(const PoisErr * f, const int & len, double & bprime, double & mprime){
@@ -168,7 +140,7 @@ void flood(const double & threshold, const PoisErr * in, const int & in_len, Poi
     int ii = 2*range_inds[range_inds_len]; //index for the last element of the range array
     if (segEval(in,in->knot) < threshold){
         addSeg(out,out_len,in->knot,0,0,threshold,max_seg_length);
-        addRange(ranges,0,ii,max_range_length);
+        if(!addRange(ranges,0,ii,max_range_length)) stop("Range buffer is not big enough. Set average_range_length to a bigger value (Possibly to some value between 5-7).");
     }
     else{
         addSeg(out,out_len,in->knot,in->coef1,in->coef2,threshold,max_seg_length);
@@ -177,7 +149,7 @@ void flood(const double & threshold, const PoisErr * in, const int & in_len, Poi
         solution_exists = segSolve((in+i), threshold, left, right);
         if (underwater && solution_exists && left < (in+i+1)->knot && left > (in+i)->knot - tol){
             addSeg(out,out_len,left,(in+i)->coef1,(in+i)->coef2,(in+i)->constant,max_seg_length);
-            addRange(ranges,left,ii,max_range_length);
+            if(!addRange(ranges,left,ii,max_range_length)) stop("Range buffer is not big enough. Set average_range_length to a bigger value (Possibly to some value between 5-7).");
             underwater = false;
         }
         else if (!underwater){
@@ -185,12 +157,12 @@ void flood(const double & threshold, const PoisErr * in, const int & in_len, Poi
         }
         if (!underwater && solution_exists && right < (in+i+1)->knot && right > (in)->knot){
             addSeg(out,out_len,right,0,0,threshold,max_seg_length);
-            addRange(ranges,right,ii,max_range_length);
+            if(!addRange(ranges,right,ii,max_range_length)) stop("Range buffer is not big enough. Set average_range_length to a bigger value (Possibly to some value between 5-7).");
             underwater = true;
         }
     }
     if (ii % 2 != 0){
-        addRange(ranges,inf,ii,max_range_length);
+        if(!addRange(ranges,inf,ii,max_range_length)) stop("Range buffer is not big enough. Set average_range_length to a bigger value (Possibly to some value between 5-7).");
     }
     range_inds[range_inds_len+1] = ii / 2;
     range_inds_len += 1;
