@@ -132,7 +132,7 @@ void removeb0(const arma::mat & B, arma::uvec & A, int & Alength){
 
 bool addbn0(arma::uvec & A, int & Alength, const arma::mat & S, const double & lambda){
     arma::rowvec norms = sum(S % S,0);
-    norms.elem(A.head_rows(Alength)) = arma::zeros<arma::vec>(Alength);
+    norms.elem(A.head_rows(Alength)).fill(0);
     arma::uword i = norms.index_max();
     if (norms(i) < (lambda*lambda))
         return true;
@@ -166,7 +166,7 @@ arma::mat blockcoordinatedescent(const arma::mat & Yhat, const double & lambda, 
         while(Alength != 0){
             i = A(Ait);
             maskb = B.col(i);
-            B.col(i) = arma::zeros<arma::vec>(p);
+            B.col(i).fill(0);
             XdotXiT(i, w, xxit);
             S.col(i) = C.col(i) - B * xxit;
             update(S,lambda,rowXhatnorm(i+1,w(i),n),B,i);
@@ -188,10 +188,14 @@ arma::mat blockcoordinatedescent(const arma::mat & Yhat, const double & lambda, 
         if (Alength != 0){
             removeb0(B.cols(A.head_rows(Alength)), A, Alength);
         }
+        //Rcout << "(removed) A =" << std::endl;
+        //Rcout <<  A.head_rows(Alength) << std::endl;
         // Check to see if KKT satisfied
         dotXXT(B, w, BXXT);
         S = C - BXXT;
         converged = addbn0(A,Alength,S,lambda);
+        //Rcout << "(added) A =" << std::endl;
+        //Rcout <<  A.head_rows(Alength) << std::endl;
         if (converged) break;
     }
     return B;

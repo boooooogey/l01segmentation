@@ -1,10 +1,12 @@
 groupFusedLasso <- function(Y, lambda, w = NULL){
     Yhat = Y - rowMeans(Y)
+    n = dim(Y)[2]
     if (lambda <= 0){
         stop("Lambda should be a positive value.")
     }
     if (is.null(w)){
-        w = rep(1,dim(Y)[2]-1)
+        w = 1:(n-1)
+        w = sqrt(n/(w*(n-w)))
     }
     else{
         if(length(w) != dim(Y)[2]-1){
