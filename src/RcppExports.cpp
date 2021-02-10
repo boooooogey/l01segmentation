@@ -6,14 +6,26 @@
 
 using namespace Rcpp;
 
-// X
-arma::mat X(const arma::vec& w);
-RcppExport SEXP _l01segmentation_X(SEXP wSEXP) {
+// Xhat
+arma::mat Xhat(const arma::vec& w);
+RcppExport SEXP _l01segmentation_Xhat(SEXP wSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec& >::type w(wSEXP);
-    rcpp_result_gen = Rcpp::wrap(X(w));
+    rcpp_result_gen = Rcpp::wrap(Xhat(w));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dotX
+arma::mat dotX(const arma::mat& R, const arma::vec& w);
+RcppExport SEXP _l01segmentation_dotX(SEXP RSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type R(RSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(dotX(R, w));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -115,7 +127,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_l01segmentation_X", (DL_FUNC) &_l01segmentation_X, 1},
+    {"_l01segmentation_Xhat", (DL_FUNC) &_l01segmentation_Xhat, 1},
+    {"_l01segmentation_dotX", (DL_FUNC) &_l01segmentation_dotX, 2},
     {"_l01segmentation_dotXT", (DL_FUNC) &_l01segmentation_dotXT, 2},
     {"_l01segmentation_rowXhatnorm", (DL_FUNC) &_l01segmentation_rowXhatnorm, 3},
     {"_l01segmentation_blockcoordinatedescent", (DL_FUNC) &_l01segmentation_blockcoordinatedescent, 3},

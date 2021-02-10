@@ -5,7 +5,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-arma::mat X(const arma::vec & w){
+arma::mat Xhat(const arma::vec & w){
     int n = w.size() + 1;
     arma::mat x(n-1,n);
     for(int i = 0; i < n; i++){
@@ -17,6 +17,15 @@ arma::mat X(const arma::vec & w){
         }
     }
     return x;
+}
+
+// [[Rcpp::export]]
+arma::mat dotX(const arma::mat & R, const arma::vec & w){
+    int p = R.n_rows, n = R.n_cols+1;
+    arma::mat out(p,n);
+    out.col(0).fill(0);
+    for(int i = 1; i < n; i ++) out.col(i) = out.col(i-1) + w(i-1) * R.col(i-1);
+    return out;
 }
 
 void dotXT(const arma::mat & R, const arma::vec & w, arma::mat & out){

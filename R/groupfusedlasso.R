@@ -14,8 +14,7 @@ groupFusedLasso <- function(Y, lambda, w = NULL){
         }
     }
     B = blockcoordinatedescent(Yhat,lambda,w) 
-    x = X(w)
-    BX = B %*% x 
+    BX = dotX(B,w)
     U = BX + rowMeans(Y - BX)
     return(U)
 }
