@@ -4,7 +4,6 @@
 
 using namespace Rcpp;
 
-// [[Rcpp::export]]
 arma::mat Xhat(const arma::vec & w){
     int n = w.size() + 1;
     arma::mat x(n-1,n);
@@ -47,7 +46,6 @@ void dotXT(const arma::mat & R, const arma::vec & w, arma::mat & out){
     }
 }
 
-// [[Rcpp::export]]
 arma::mat dotXT(const arma::mat & R, const arma::vec & w){
     int p = R.n_rows;
     int n = R.n_cols;
@@ -98,7 +96,6 @@ void XdotXiT(const int & i, const arma::vec & w, arma::mat & out){
     }
 }
 
-// [[Rcpp::export]]
 double rowXhatnorm(const double & i, const double & w, const double & n){
     return i * (n - i) * w * w / n;
 }

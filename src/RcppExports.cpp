@@ -6,17 +6,6 @@
 
 using namespace Rcpp;
 
-// Xhat
-arma::mat Xhat(const arma::vec& w);
-RcppExport SEXP _l01segmentation_Xhat(SEXP wSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type w(wSEXP);
-    rcpp_result_gen = Rcpp::wrap(Xhat(w));
-    return rcpp_result_gen;
-END_RCPP
-}
 // dotX
 arma::mat dotX(const arma::mat& R, const arma::vec& w);
 RcppExport SEXP _l01segmentation_dotX(SEXP RSEXP, SEXP wSEXP) {
@@ -26,31 +15,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type R(RSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type w(wSEXP);
     rcpp_result_gen = Rcpp::wrap(dotX(R, w));
-    return rcpp_result_gen;
-END_RCPP
-}
-// dotXT
-arma::mat dotXT(const arma::mat& R, const arma::vec& w);
-RcppExport SEXP _l01segmentation_dotXT(SEXP RSEXP, SEXP wSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type R(RSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type w(wSEXP);
-    rcpp_result_gen = Rcpp::wrap(dotXT(R, w));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rowXhatnorm
-double rowXhatnorm(const double& i, const double& w, const double& n);
-RcppExport SEXP _l01segmentation_rowXhatnorm(SEXP iSEXP, SEXP wSEXP, SEXP nSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double& >::type i(iSEXP);
-    Rcpp::traits::input_parameter< const double& >::type w(wSEXP);
-    Rcpp::traits::input_parameter< const double& >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(rowXhatnorm(i, w, n));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -79,6 +43,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type max_seg_length(max_seg_lengthSEXP);
     Rcpp::traits::input_parameter< int >::type average_range_length(average_range_lengthSEXP);
     rcpp_result_gen = Rcpp::wrap(L0PoisErrSeg(y, l2, w, max_seg_length, average_range_length));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L0PoisBreakPoints
+IntegerVector L0PoisBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w, int max_seg_length, int average_range_length);
+RcppExport SEXP _l01segmentation_L0PoisBreakPoints(SEXP ySEXP, SEXP l2SEXP, SEXP wSEXP, SEXP max_seg_lengthSEXP, SEXP average_range_lengthSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type l2(l2SEXP);
+    Rcpp::traits::input_parameter< Nullable<NumericVector> >::type w(wSEXP);
+    Rcpp::traits::input_parameter< int >::type max_seg_length(max_seg_lengthSEXP);
+    Rcpp::traits::input_parameter< int >::type average_range_length(average_range_lengthSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0PoisBreakPoints(y, l2, w, max_seg_length, average_range_length));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -125,17 +104,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// L1SqrtErrBreakPoints
+IntegerVector L1SqrtErrBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w);
+RcppExport SEXP _l01segmentation_L1SqrtErrBreakPoints(SEXP ySEXP, SEXP l2SEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type l2(l2SEXP);
+    Rcpp::traits::input_parameter< Nullable<NumericVector> >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L1SqrtErrBreakPoints(y, l2, w));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_l01segmentation_Xhat", (DL_FUNC) &_l01segmentation_Xhat, 1},
     {"_l01segmentation_dotX", (DL_FUNC) &_l01segmentation_dotX, 2},
-    {"_l01segmentation_dotXT", (DL_FUNC) &_l01segmentation_dotXT, 2},
-    {"_l01segmentation_rowXhatnorm", (DL_FUNC) &_l01segmentation_rowXhatnorm, 3},
     {"_l01segmentation_blockcoordinatedescent", (DL_FUNC) &_l01segmentation_blockcoordinatedescent, 3},
     {"_l01segmentation_L0PoisErrSeg", (DL_FUNC) &_l01segmentation_L0PoisErrSeg, 5},
+    {"_l01segmentation_L0PoisBreakPoints", (DL_FUNC) &_l01segmentation_L0PoisBreakPoints, 5},
     {"_l01segmentation_L0SqrtErrSeg", (DL_FUNC) &_l01segmentation_L0SqrtErrSeg, 5},
     {"_l01segmentation_L0SqrtErrBreakPoints", (DL_FUNC) &_l01segmentation_L0SqrtErrBreakPoints, 5},
     {"_l01segmentation_L1SqrtErrFil", (DL_FUNC) &_l01segmentation_L1SqrtErrFil, 3},
+    {"_l01segmentation_L1SqrtErrBreakPoints", (DL_FUNC) &_l01segmentation_L1SqrtErrBreakPoints, 3},
     {NULL, NULL, 0}
 };
 

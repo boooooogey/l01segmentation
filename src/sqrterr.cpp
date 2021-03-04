@@ -343,3 +343,17 @@ NumericVector L1SqrtErrFil(NumericVector y, NumericVector l2, Nullable<NumericVe
     return z;
 }
 
+// [[Rcpp::export]]
+IntegerVector L1SqrtErrBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue) {
+    NumericVector z = L1SqrtErrFil(y, l2, w);
+    IntegerVector ii(z.size());
+    int N = 0;
+    for(int i = 0; i < z.size()-1; i++){
+        if( z[i] != z[i+1]){
+            ii[N] = i+1;
+            N++;
+        }
+    }
+    return IntegerVector(ii.begin(),ii.begin()+N);
+}
+
