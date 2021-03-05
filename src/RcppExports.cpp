@@ -47,7 +47,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // L0PoisBreakPoints
-IntegerVector L0PoisBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w, int max_seg_length, int average_range_length);
+List L0PoisBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w, int max_seg_length, int average_range_length);
 RcppExport SEXP _l01segmentation_L0PoisBreakPoints(SEXP ySEXP, SEXP l2SEXP, SEXP wSEXP, SEXP max_seg_lengthSEXP, SEXP average_range_lengthSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -77,7 +77,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // L0SqrtErrBreakPoints
-IntegerVector L0SqrtErrBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w, int max_seg_length, int average_range_length);
+List L0SqrtErrBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w, int max_seg_length, int average_range_length);
 RcppExport SEXP _l01segmentation_L0SqrtErrBreakPoints(SEXP ySEXP, SEXP l2SEXP, SEXP wSEXP, SEXP max_seg_lengthSEXP, SEXP average_range_lengthSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -105,7 +105,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // L1SqrtErrBreakPoints
-IntegerVector L1SqrtErrBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w);
+List L1SqrtErrBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w);
 RcppExport SEXP _l01segmentation_L1SqrtErrBreakPoints(SEXP ySEXP, SEXP l2SEXP, SEXP wSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

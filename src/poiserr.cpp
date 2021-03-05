@@ -245,16 +245,19 @@ List L0PoisErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w =
 }
 
 // [[Rcpp::export]]
-IntegerVector L0PoisBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue, int max_seg_length=3000, int average_range_length=4) {
+List L0PoisBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue, int max_seg_length=3000, int average_range_length=4) {
     List out  = L0PoisErrSeg(y, l2, w, max_seg_length, average_range_length);
     NumericVector z = out["x"];
     IntegerVector ii(z.size());
+    NumericVector v(z.size());
     int N = 0;
+    v[0] = z[0];
     for(int i = 0; i < z.size()-1; i++){
         if( z[i] != z[i+1]){
             ii[N] = i+1;
             N++;
+            v[N] = z[i+1];
         }
     }
-    return IntegerVector(ii.begin(),ii.begin()+N);
+    return List::create(Named("ii") = IntegerVector(ii.begin(),ii.begin()+N), Named("val") = NumericVector(v.begin(),v.begin()+N+1));
 }

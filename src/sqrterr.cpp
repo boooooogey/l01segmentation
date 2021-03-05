@@ -235,18 +235,21 @@ List L0SqrtErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w =
 }
 
 // [[Rcpp::export]]
-IntegerVector L0SqrtErrBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue, int max_seg_length=3000, int average_range_length=4) {
+List L0SqrtErrBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue, int max_seg_length=3000, int average_range_length=4) {
     List out  = L0SqrtErrSeg(y, l2, w, max_seg_length, average_range_length);
     NumericVector z = out["x"];
     IntegerVector ii(z.size());
+    NumericVector v(z.size());
     int N = 0;
+    v[0] = z[0];
     for(int i = 0; i < z.size()-1; i++){
         if( z[i] != z[i+1]){
             ii[N] = i+1;
             N++;
+            v[N] = z[i+1];
         }
     }
-    return IntegerVector(ii.begin(),ii.begin()+N);
+    return List::create(Named("ii") = IntegerVector(ii.begin(),ii.begin()+N), Named("val") = NumericVector(v.begin(),v.begin()+N+1));
 }
 
 double clip(const double & x, const double & up, const double & low){
@@ -344,16 +347,19 @@ NumericVector L1SqrtErrFil(NumericVector y, NumericVector l2, Nullable<NumericVe
 }
 
 // [[Rcpp::export]]
-IntegerVector L1SqrtErrBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue) {
+List L1SqrtErrBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue) {
     NumericVector z = L1SqrtErrFil(y, l2, w);
     IntegerVector ii(z.size());
+    NumericVector v(z.size());
     int N = 0;
+    v[0] = z[0];
     for(int i = 0; i < z.size()-1; i++){
         if( z[i] != z[i+1]){
             ii[N] = i+1;
             N++;
+            v[N] = z[i+1];
         }
     }
-    return IntegerVector(ii.begin(),ii.begin()+N);
+    return List::create(Named("ii") = IntegerVector(ii.begin(),ii.begin()+N), Named("val") = NumericVector(v.begin(),v.begin()+N+1));
 }
 
