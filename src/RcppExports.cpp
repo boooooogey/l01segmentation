@@ -6,18 +6,6 @@
 
 using namespace Rcpp;
 
-// dotX
-arma::mat dotX(const arma::mat& R, const arma::vec& w);
-RcppExport SEXP _l01segmentation_dotX(SEXP RSEXP, SEXP wSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type R(RSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type w(wSEXP);
-    rcpp_result_gen = Rcpp::wrap(dotX(R, w));
-    return rcpp_result_gen;
-END_RCPP
-}
 // blockcoordinatedescent
 List blockcoordinatedescent(const arma::mat& Yhat, const double& lambda, const arma::vec& w);
 RcppExport SEXP _l01segmentation_blockcoordinatedescent(SEXP YhatSEXP, SEXP lambdaSEXP, SEXP wSEXP) {
@@ -119,7 +107,6 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_l01segmentation_dotX", (DL_FUNC) &_l01segmentation_dotX, 2},
     {"_l01segmentation_blockcoordinatedescent", (DL_FUNC) &_l01segmentation_blockcoordinatedescent, 3},
     {"_l01segmentation_L0PoisErrSeg", (DL_FUNC) &_l01segmentation_L0PoisErrSeg, 5},
     {"_l01segmentation_L0PoisBreakPoints", (DL_FUNC) &_l01segmentation_L0PoisBreakPoints, 5},

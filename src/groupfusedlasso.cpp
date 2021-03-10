@@ -18,7 +18,6 @@ arma::mat Xhat(const arma::vec & w){
     return x;
 }
 
-// [[Rcpp::export]]
 arma::mat dotX(const arma::mat & R, const arma::vec & w){
     int p = R.n_rows, n = R.n_cols+1;
     arma::mat out(p,n);

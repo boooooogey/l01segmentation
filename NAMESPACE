@@ -1,3 +1,6 @@
 useDynLib(l01segmentation, .registration=TRUE)
-exportPattern("^[[:alpha:]]+")
+export(plotsegments)
+export(plotgroupsegments)
+export(fusedsegmentation)
+export(groupfusedsegmentation)
 importFrom(Rcpp, evalCpp)
