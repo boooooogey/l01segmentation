@@ -19,7 +19,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // blockcoordinatedescent
-arma::mat blockcoordinatedescent(const arma::mat& Yhat, const double& lambda, const arma::vec& w);
+List blockcoordinatedescent(const arma::mat& Yhat, const double& lambda, const arma::vec& w);
 RcppExport SEXP _l01segmentation_blockcoordinatedescent(SEXP YhatSEXP, SEXP lambdaSEXP, SEXP wSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

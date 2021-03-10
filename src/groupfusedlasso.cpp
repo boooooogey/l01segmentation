@@ -131,7 +131,7 @@ void update(const arma::mat & S, const double & lambda, const double & gammai, a
 }
 
 void removeb0(const arma::mat & B, arma::uvec & A, int & Alength){
-    arma::uvec ii = find(sqrt(sum(B % B,0)) != 0);
+    arma::uvec ii = find(sum(B % B,0) != 0);
     Alength = ii.size();
     A.head_rows(Alength) = A.rows(ii);
 }
@@ -148,7 +148,7 @@ bool addbn0(arma::uvec & A, int & Alength, const arma::mat & S, const double & l
 }
 
 //[[Rcpp::export]]
-arma::mat blockcoordinatedescent(const arma::mat & Yhat, const double & lambda, const arma::vec & w){
+List blockcoordinatedescent(const arma::mat & Yhat, const double & lambda, const arma::vec & w){
     int p = Yhat.n_rows; int n = Yhat.n_cols;
 
     arma::mat B(p,n-1,arma::fill::zeros);
@@ -174,7 +174,7 @@ arma::mat blockcoordinatedescent(const arma::mat & Yhat, const double & lambda, 
             maskb = B.col(i);
             B.col(i).fill(0);
             XdotXiT(i, w, xxit);
-            S.col(i) = C.col(i) - B * xxit;
+            S.col(i) = C.col(i) - B.cols(A.head_rows(Alength)) * xxit.rows(A.head_rows(Alength)); //just select non 0 from B
             update(S,lambda,rowXhatnorm(i+1,w(i),n),B,i);
             //Rcout << "i = " << i << " diff = " << norm(maskb - B.col(i)) << std::endl;
             if(norm(maskb - B.col(i)) > tol) converged = false;
@@ -197,13 +197,15 @@ arma::mat blockcoordinatedescent(const arma::mat & Yhat, const double & lambda, 
         //Rcout << "(removed) A =" << std::endl;
         //Rcout <<  A.head_rows(Alength) << std::endl;
         // Check to see if KKT satisfied
-        dotXXT(B, w, BXXT);
+        dotXXT(B, w, BXXT); //also B has zero here
         S = C - BXXT;
         converged = addbn0(A,Alength,S,lambda);
         //Rcout << "(added) A =" << std::endl;
         //Rcout <<  A.head_rows(Alength) << std::endl;
         if (converged) break;
     }
-    return B;
+    arma::uvec Asorted = arma::sort(A.head_rows(Alength));
+    arma::mat Bsub = B.cols(Asorted);
+    return List::create(Named("B") = Bsub, Named("ii") = IntegerVector(Asorted.begin(),Asorted.begin()+Alength)+1);
 }
 
