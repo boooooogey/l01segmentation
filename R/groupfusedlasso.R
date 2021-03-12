@@ -29,7 +29,7 @@ formatgroupsegments <- function(out, Y, w, n, p){
     return(out)
 }
 
-groupfusedsegmentation <- function(Y, lambda, w = NULL){
+groupfusedsegmentation <- function(Y, lambda, w = NULL, timer = 5, tolerance = 1e-6){
     Yhat = Y - rowMeans(Y)
     p = dim(Y)[1]
     n = dim(Y)[2]
@@ -45,6 +45,6 @@ groupfusedsegmentation <- function(Y, lambda, w = NULL){
             stop("The number of weights should be equal to n-1 (n is the number of columns that Y has).")
         }
     }
-    out = blockcoordinatedescent(Yhat,lambda,w) 
+    out = blockcoordinatedescent(Yhat,lambda,w,timer,tolerance) 
     return(formatgroupsegments(out,Y,w,n,p))
 }

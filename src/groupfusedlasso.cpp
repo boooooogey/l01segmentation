@@ -1,5 +1,6 @@
 #include <RcppArmadillo.h>
 #include <algorithm>
+#include <chrono>
 // [[Rcpp::depends(RcppArmadillo)]]
 
 using namespace Rcpp;
@@ -147,7 +148,7 @@ bool addbn0(arma::uvec & A, int & Alength, const arma::mat & S, const double & l
 }
 
 //[[Rcpp::export]]
-List blockcoordinatedescent(const arma::mat & Yhat, const double & lambda, const arma::vec & w){
+List blockcoordinatedescent(const arma::mat & Yhat, const double & lambda, const arma::vec & w, const double mintimer = 5, const double tol = 1e-6){
     int p = Yhat.n_rows; int n = Yhat.n_cols;
 
     arma::mat B(p,n-1,arma::fill::zeros);
@@ -157,11 +158,16 @@ List blockcoordinatedescent(const arma::mat & Yhat, const double & lambda, const
     arma::mat S(p,n-1,arma::fill::zeros);
     arma::mat BXXT(p,n-1,arma::fill::zeros);
     arma::uvec A(n-1,arma::fill::zeros);
-    double tol = 1e-6;
     int Ait = 0;
     int Alength = 0;
     int i = 0;
     bool converged;
+
+    double exctime = 60*mintimer;
+    bool timesup = false;
+    auto start = std::chrono::system_clock::now();
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed;
 
     dotXT(Yhat,w,C);
     while(true){
@@ -202,9 +208,15 @@ List blockcoordinatedescent(const arma::mat & Yhat, const double & lambda, const
         //Rcout << "(added) A =" << std::endl;
         //Rcout <<  A.head_rows(Alength) << std::endl;
         if (converged) break;
+        end = std::chrono::system_clock::now();
+        elapsed = end-start;
+        if (exctime <= elapsed.count()){
+            warning("Execution time limit has been reached. Stopping execution before convergence.");
+            break;
+        }
     }
     arma::uvec Asorted = arma::sort(A.head_rows(Alength));
     arma::mat Bsub = B.cols(Asorted);
-    return List::create(Named("B") = Bsub, Named("ii") = IntegerVector(Asorted.begin(),Asorted.begin()+Alength)+1);
+    return List::create(Named("B") = Bsub, Named("ii") = IntegerVector(Asorted.begin(),Asorted.begin()+Alength)+1,Named("converged") = converged);
 }
 
