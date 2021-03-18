@@ -3,6 +3,7 @@
 
 double inf = std::numeric_limits<double>::max();
 double neginf = -inf;
+double infmin = std::numeric_limits<double>::min();
 
 bool addRange(double * ranges, const double & val, int & ii, const int & max){
     if (ii+1 > max){
