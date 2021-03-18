@@ -127,7 +127,7 @@ bool segSolve(const PoisErr * f, const double & t, double & left, double & right
     if( a != 0 && b != 0){
         double exin = b * exp(c/a) / a;
         if( -exp(-1) <= exin && exin <= 0 ){
-            if (exin < infmin) exin = 0;
+            if (abs(exin) < infmin) exin = 0;
             left = ( c - a * lambert_wm1(exin))/a;
             right = ( c - a * lambert_w0(exin))/a;
             if(left > right){
