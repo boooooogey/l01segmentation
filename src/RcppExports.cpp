@@ -22,7 +22,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // L0PoisErrSeg
-List L0PoisErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w, int max_seg_length, int average_range_length);
+NumericVector L0PoisErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w, int max_seg_length, int average_range_length);
 RcppExport SEXP _l01segmentation_L0PoisErrSeg(SEXP ySEXP, SEXP l2SEXP, SEXP wSEXP, SEXP max_seg_lengthSEXP, SEXP average_range_lengthSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -52,7 +52,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // L0SqrtErrSeg
-List L0SqrtErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w, int max_seg_length, int average_range_length);
+NumericVector L0SqrtErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w, int max_seg_length, int average_range_length);
 RcppExport SEXP _l01segmentation_L0SqrtErrSeg(SEXP ySEXP, SEXP l2SEXP, SEXP wSEXP, SEXP max_seg_lengthSEXP, SEXP average_range_lengthSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

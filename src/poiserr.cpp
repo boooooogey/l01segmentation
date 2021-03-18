@@ -24,14 +24,43 @@ struct PoisErr{
 };
 
 double segMax(const PoisErr * f){
-    if (f->coef1 == 0){
-        stop("Maximum achieved at infinity.");
+    if (f->coef2 == 0){
+        if (f->coef1 > 0){
+            return inf;
+        }
+        else if (f->coef1 < 0){
+            return neginf;
+        }
+        else{
+            stop("Maximum value reach at more than one point (all real numbers).");
+        }
     }
-	return f->coef2/(-f->coef1);
+    else if (f->coef1 == 0){
+        if (f->coef2 > 0){
+            return inf;
+        }
+        else if (f->coef2 < 0){
+            return neginf;
+        }
+        else{
+            stop("Maximum value reach at more than one point (all real numbers).");
+        }
+    }
+    else if (-f->coef1/f->coef2 > 0){
+        return log(-f->coef1/f->coef2);
+    }
+    else{
+        if (f->coef2 < 0  && f->coef1 < 0){
+            return neginf;
+        }
+        else{
+            return inf;
+        }
+    }
 }
 
 double segEval(const PoisErr * f, const double & b){
-    return f->coef1 * b + f->coef2 * log(b) + f->constant;
+    return f->coef1 * b + f->coef2 * exp(b) + f->constant;
 }
 
 void segSet(PoisErr * f, const double & knot, const double & coef1, const double & coef2, const double & constant){
@@ -77,13 +106,13 @@ void insertSeg(PoisErr * f, const int & i, const double & knot, const double & c
 }
 
 void segInit(PoisErr * f, int & len, const double & knot, const double & y, const double & w, const int & max){
-    addSeg(f,len,knot,-w,w*y,0,max);
+    addSeg(f,len,knot,w*y,-w,0,max);
 }
 
 void funcAdd(PoisErr * d, int & d_len, PoisErr * f, int & f_len, const double & y, const double & w){
     for(int i=0; i < f_len; i++){
-        (d+i)->coef1 = (f+i)->coef1 - w;
-        (d+i)->coef2 = (f+i)->coef2 + w * y;
+        (d+i)->coef1 = (f+i)->coef1 + w*y;
+        (d+i)->coef2 = (f+i)->coef2 - w;
         (d+i)->constant = (f+i)->constant;
         (d+i)->knot = (f+i)->knot;
     }
@@ -95,22 +124,36 @@ bool segSolve(const PoisErr * f, const double & t, double & left, double & right
     using boost::math::lambert_w0;
     using boost::math::lambert_wm1;
     double a = f->coef1, b=f->coef2, c = t - f->constant; 
-    if (b == 0){
+    if( a != 0 && b != 0){
+        double exin = b * exp(c/a) / a;
+        if( -exp(-1) <= exin && exin <= 0 ){
+            left = ( c - a * lambert_wm1(exin))/a;
+            right = ( c - a * lambert_w0(exin))/a;
+            if(left > right){
+                double tmp = left;
+                left = right;
+                right = tmp;
+            }
+            return true;
+        }
+        else{
+            left = right = 0;
+            //left = right = (c - a * lambert_w0(exin))/a;
+            return false;
+        }
+    }
+    else if( a != 0 && b == 0){
         left = right = c/a;
         return false;
     }
-    double in = a * exp(c/b) / b;
-    if ( in < -exp(-1) || in > 0){
+    else if(a == 0 && b != 0 && c != 0){
+        left = right = log(c/b);
+        return true;
+    }
+    else{
+        left = right = 0;
         return false;
     }
-    left = b * lambert_wm1(in) / a;
-    right = b * lambert_w0(in) / a;
-    if (left > right){
-        double tmp = left;
-        left = right;
-        right = tmp;
-    }
-    return true;
 }
 
 void maximize(const PoisErr * f, const int & len, double & bprime, double & mprime){
@@ -140,10 +183,11 @@ void flood(const double & threshold, const PoisErr * in, const int & in_len, Poi
     int ii = 2*range_inds[range_inds_len]; //index for the last element of the range array
     if (segEval(in,in->knot) < threshold){
         addSeg(out,out_len,in->knot,0,0,threshold,max_seg_length);
-        if(!addRange(ranges,0,ii,max_range_length)) stop("Range buffer is not big enough. Set average_range_length to a bigger value (Possibly to some value between 5-7).");
+        if(!addRange(ranges,neginf,ii,max_range_length)) stop("Range buffer is not big enough. Set average_range_length to a bigger value (Possibly to some value between 5-7).");
     }
     else{
-        addSeg(out,out_len,in->knot,in->coef1,in->coef2,threshold,max_seg_length);
+        addSeg(out,out_len,in->knot,in->coef1,in->coef2,in->constant,max_seg_length);
+        underwater = false;
     }
     for (int i=0; i < in_len-1; i++){
         solution_exists = segSolve((in+i), threshold, left, right);
@@ -152,7 +196,7 @@ void flood(const double & threshold, const PoisErr * in, const int & in_len, Poi
             if(!addRange(ranges,left,ii,max_range_length)) stop("Range buffer is not big enough. Set average_range_length to a bigger value (Possibly to some value between 5-7).");
             underwater = false;
         }
-        else if (!underwater){
+        else if (!underwater && i != 0){
             addSeg(out,out_len,(in+i)->knot,(in+i)->coef1,(in+i)->coef2,(in+i)->constant,max_seg_length);
         }
         if (!underwater && solution_exists && right < (in+i+1)->knot && right > (in)->knot){
@@ -170,9 +214,8 @@ void flood(const double & threshold, const PoisErr * in, const int & in_len, Poi
 }
 
 // [[Rcpp::export]]
-List L0PoisErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue, int max_seg_length=3000, int average_range_length=4) {
+NumericVector L0PoisErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue, int max_seg_length=3000, int average_range_length=4) {
     int N = y.size();
-    bool istherezeros = false;
 
     if (l2.size() == 1){
         l2 = rep(l2[0],N-1);
@@ -186,10 +229,6 @@ List L0PoisErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w =
 
     if (is_true(any(y < 0))){
         stop("Input must be nonnegative.\n");
-    }
-    if (is_true(any(y == 0))){
-        y = y + 1e-9;
-        istherezeros = true;
     }
 
     NumericVector weights;
@@ -220,7 +259,7 @@ List L0PoisErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w =
     double * bstar = new double[N];
     NumericVector z = NumericVector(N);
 
-    segInit(d, d_len, 0, y[0], weights[0], max_seg_length);
+    segInit(d, d_len, neginf, y[0], weights[0], max_seg_length);
     addSeg(d, d_len, inf, 0, 0, neginf, max_seg_length);
 
     for(int i = 1; i < N; i++){
@@ -228,12 +267,8 @@ List L0PoisErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w =
         flood(mprime-l2[i-1], d, d_len, f, f_len, ranges, range_inds, range_inds_len, max_seg_length, max_range_length);
         funcAdd(d, d_len, f, f_len, y[i], weights[i]);
     }
-
     maximize(d, d_len, bstar[N-1], mprime);
     backtrace(bstar, ranges, range_inds, range_inds_len, z.begin());
-    if (istherezeros){
-        z = z - 1e-9;
-    }
 
     //Clean up
     delete[] d;
@@ -241,13 +276,12 @@ List L0PoisErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w =
     delete[] ranges;
     delete[] range_inds;
     delete[] bstar;
-    return List::create(Named("x") = z, Named("maxval") = mprime);
+    return z;
 }
 
 // [[Rcpp::export]]
 List L0PoisBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w = R_NilValue, int max_seg_length=3000, int average_range_length=4) {
-    List out  = L0PoisErrSeg(y, l2, w, max_seg_length, average_range_length);
-    NumericVector z = out["x"];
+    NumericVector z = L0PoisErrSeg(y, l2, w, max_seg_length, average_range_length);
     IntegerVector ii(z.size());
     NumericVector v(z.size());
     int N = 0;

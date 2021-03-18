@@ -30,9 +30,10 @@ fusedsegmentation <- function(y, lambda2, weight = NULL, l = 0, objective = "squ
         if(l == 0){
             if (format == "compressed"){
                 breakpoints = L0PoisBreakPoints(y,lambda2,weight,maxSegLength,averageRangeLength)
+                breakpoints$val = exp(breakpoints$val)
             }
             else{
-                signal = L0PoisErrSeg(y,lambda2,weight,maxSegLength,averageRangeLength)
+                signal = exp(L0PoisErrSeg(y,lambda2,weight,maxSegLength,averageRangeLength))
             }
         }
         else{
