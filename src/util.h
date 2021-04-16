@@ -1,5 +1,5 @@
-#ifndef _GLOBALS_H
-#define _GLABALS_H
+#ifndef _UTIL_H
+#define _UTIL_H
 
 extern double inf;
 extern double neginf;

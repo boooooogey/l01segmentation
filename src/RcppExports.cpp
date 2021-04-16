@@ -6,6 +6,22 @@
 
 using namespace Rcpp;
 
+// gmm
+List gmm(arma::mat const& data, int const& k, int const& km_iter, int const& em_iter, double const& var_floor, bool verbose);
+RcppExport SEXP _l01segmentation_gmm(SEXP dataSEXP, SEXP kSEXP, SEXP km_iterSEXP, SEXP em_iterSEXP, SEXP var_floorSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat const& >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< int const& >::type k(kSEXP);
+    Rcpp::traits::input_parameter< int const& >::type km_iter(km_iterSEXP);
+    Rcpp::traits::input_parameter< int const& >::type em_iter(em_iterSEXP);
+    Rcpp::traits::input_parameter< double const& >::type var_floor(var_floorSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(gmm(data, k, km_iter, em_iter, var_floor, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
 // blockcoordinatedescent
 List blockcoordinatedescent(const arma::mat& Yhat, const double& lambda, const arma::vec& w, const double mintimer, const double tol);
 RcppExport SEXP _l01segmentation_blockcoordinatedescent(SEXP YhatSEXP, SEXP lambdaSEXP, SEXP wSEXP, SEXP mintimerSEXP, SEXP tolSEXP) {
@@ -109,6 +125,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_l01segmentation_gmm", (DL_FUNC) &_l01segmentation_gmm, 6},
     {"_l01segmentation_blockcoordinatedescent", (DL_FUNC) &_l01segmentation_blockcoordinatedescent, 5},
     {"_l01segmentation_L0PoisErrSeg", (DL_FUNC) &_l01segmentation_L0PoisErrSeg, 5},
     {"_l01segmentation_L0PoisBreakPoints", (DL_FUNC) &_l01segmentation_L0PoisBreakPoints, 5},

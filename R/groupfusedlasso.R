@@ -1,32 +1,52 @@
 formatgroupsegments <- function(out, Y, w, n, p){
-    nbreak = length(out$ii)
-    wa = (c(out$ii[2:nbreak], n) - out$ii)
-    
-    values = matrix(nrow=p,ncol=nbreak+1)
-    starts = rep(0,nbreak+1)
-    ends = rep(0,nbreak+1)
-    
-    starts[1] = 1
-    ends [1]= c(out$ii[1])
-    values[,1] = rowMeans(Y) - colSums(apply(t(out$B) * w[out$ii],2,cumsum)*wa)/n
-    
-    for(i in 2:(nbreak+1)){
-        starts[i] = ends[i-1] + 1
-        if( i != (nbreak+1)){
-            ends[i] = out$ii[i]
+    if(length(out$ii) == 0){
+        values = rowMeans(Y)
+        out = data.frame(start=c(1),end=c(n))
+        for(i in 1:length(values)){
+            out[[paste0("v",i)]] = values[i]
         }
-        else{
-            ends[i] = n
+        return(out)
+    }
+    else if (length(out$ii) == 1){
+        values = matrix(nrow=p,ncol=2)
+        values[,1] = rowMeans(Y) - out$B * (n - out$ii) / n
+        values[,2] = values[,1] + out$B * w[out$ii]
+        out = data.frame(start=c(1,out$ii+1),end=c(out$ii,n))
+        for(i in 1:dim(values)[1]){
+            out[[paste0("v",i)]] = values[i,]
         }
-        values[,i] = values[,i-1] + out$B[,i-1] * w[out$ii[i-1]]
+        return(out)
     }
-    
-    out = data.frame(start=starts,end=ends)
-    for(i in 1:dim(values)[1]){
-        out[[paste0("v",i)]] = values[i,]
+    else{
+        nbreak = length(out$ii)
+        wa = (c(out$ii[2:nbreak], n) - out$ii)
+        
+        values = matrix(nrow=p,ncol=nbreak+1)
+        starts = rep(0,nbreak+1)
+        ends = rep(0,nbreak+1)
+        
+        starts[1] = 1
+        ends [1]= c(out$ii[1])
+        values[,1] = rowMeans(Y) - colSums(apply(t(out$B) * w[out$ii],2,cumsum)*wa)/n
+        
+        for(i in 2:(nbreak+1)){
+            starts[i] = ends[i-1] + 1
+            if( i != (nbreak+1)){
+                ends[i] = out$ii[i]
+            }
+            else{
+                ends[i] = n
+            }
+            values[,i] = values[,i-1] + out$B[,i-1] * w[out$ii[i-1]]
+        }
+        
+        out = data.frame(start=starts,end=ends)
+        for(i in 1:dim(values)[1]){
+            out[[paste0("v",i)]] = values[i,]
+        }
+        
+        return(out)
     }
-    
-    return(out)
 }
 
 groupfusedsegmentation <- function(Y, lambda, w = NULL, timer = 5, tolerance = 1e-6){
