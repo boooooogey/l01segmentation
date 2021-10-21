@@ -6,6 +6,37 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
+// L1BinomialApproximate
+NumericVector L1BinomialApproximate(NumericVector M, NumericVector C, double lambda);
+RcppExport SEXP _l01segmentation_L1BinomialApproximate(SEXP MSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type M(MSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type C(CSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(L1BinomialApproximate(M, C, lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L1BinomialApproximateCondensed
+List L1BinomialApproximateCondensed(NumericVector M, NumericVector C, double lambda);
+RcppExport SEXP _l01segmentation_L1BinomialApproximateCondensed(SEXP MSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type M(MSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type C(CSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(L1BinomialApproximateCondensed(M, C, lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
 // gmm
 List gmm(arma::mat const& data, int const& k, int const& km_iter, int const& em_iter, double const& var_floor, bool verbose);
 RcppExport SEXP _l01segmentation_gmm(SEXP dataSEXP, SEXP kSEXP, SEXP km_iterSEXP, SEXP em_iterSEXP, SEXP var_floorSEXP, SEXP verboseSEXP) {
@@ -37,102 +68,247 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// L0PoisErrSeg
-NumericVector L0PoisErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w, int max_seg_length, int average_range_length);
-RcppExport SEXP _l01segmentation_L0PoisErrSeg(SEXP ySEXP, SEXP l2SEXP, SEXP wSEXP, SEXP max_seg_lengthSEXP, SEXP average_range_lengthSEXP) {
+// L0PoissonApproximate
+NumericVector L0PoissonApproximate(NumericVector y, NumericVector l, NumericVector w);
+RcppExport SEXP _l01segmentation_L0PoissonApproximate(SEXP ySEXP, SEXP lSEXP, SEXP wSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type l2(l2SEXP);
-    Rcpp::traits::input_parameter< Nullable<NumericVector> >::type w(wSEXP);
-    Rcpp::traits::input_parameter< int >::type max_seg_length(max_seg_lengthSEXP);
-    Rcpp::traits::input_parameter< int >::type average_range_length(average_range_lengthSEXP);
-    rcpp_result_gen = Rcpp::wrap(L0PoisErrSeg(y, l2, w, max_seg_length, average_range_length));
+    Rcpp::traits::input_parameter< NumericVector >::type l(lSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0PoissonApproximate(y, l, w));
     return rcpp_result_gen;
 END_RCPP
 }
-// L0PoisBreakPoints
-List L0PoisBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w, int max_seg_length, int average_range_length);
-RcppExport SEXP _l01segmentation_L0PoisBreakPoints(SEXP ySEXP, SEXP l2SEXP, SEXP wSEXP, SEXP max_seg_lengthSEXP, SEXP average_range_lengthSEXP) {
+// L0GaussianApproximate
+NumericVector L0GaussianApproximate(NumericVector y, NumericVector l, NumericVector w);
+RcppExport SEXP _l01segmentation_L0GaussianApproximate(SEXP ySEXP, SEXP lSEXP, SEXP wSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type l2(l2SEXP);
-    Rcpp::traits::input_parameter< Nullable<NumericVector> >::type w(wSEXP);
-    Rcpp::traits::input_parameter< int >::type max_seg_length(max_seg_lengthSEXP);
-    Rcpp::traits::input_parameter< int >::type average_range_length(average_range_lengthSEXP);
-    rcpp_result_gen = Rcpp::wrap(L0PoisBreakPoints(y, l2, w, max_seg_length, average_range_length));
+    Rcpp::traits::input_parameter< NumericVector >::type l(lSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0GaussianApproximate(y, l, w));
     return rcpp_result_gen;
 END_RCPP
 }
-// L0SqrtErrSeg
-NumericVector L0SqrtErrSeg(NumericVector y, NumericVector l2, Nullable<NumericVector> w, int max_seg_length, int average_range_length);
-RcppExport SEXP _l01segmentation_L0SqrtErrSeg(SEXP ySEXP, SEXP l2SEXP, SEXP wSEXP, SEXP max_seg_lengthSEXP, SEXP average_range_lengthSEXP) {
+// L0ExponentialApproximate
+NumericVector L0ExponentialApproximate(NumericVector y, NumericVector l, NumericVector w);
+RcppExport SEXP _l01segmentation_L0ExponentialApproximate(SEXP ySEXP, SEXP lSEXP, SEXP wSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type l2(l2SEXP);
-    Rcpp::traits::input_parameter< Nullable<NumericVector> >::type w(wSEXP);
-    Rcpp::traits::input_parameter< int >::type max_seg_length(max_seg_lengthSEXP);
-    Rcpp::traits::input_parameter< int >::type average_range_length(average_range_lengthSEXP);
-    rcpp_result_gen = Rcpp::wrap(L0SqrtErrSeg(y, l2, w, max_seg_length, average_range_length));
+    Rcpp::traits::input_parameter< NumericVector >::type l(lSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0ExponentialApproximate(y, l, w));
     return rcpp_result_gen;
 END_RCPP
 }
-// L0SqrtErrBreakPoints
-List L0SqrtErrBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w, int max_seg_length, int average_range_length);
-RcppExport SEXP _l01segmentation_L0SqrtErrBreakPoints(SEXP ySEXP, SEXP l2SEXP, SEXP wSEXP, SEXP max_seg_lengthSEXP, SEXP average_range_lengthSEXP) {
+// L0PoissonApproximateCondensed
+List L0PoissonApproximateCondensed(NumericVector y, NumericVector l, NumericVector w);
+RcppExport SEXP _l01segmentation_L0PoissonApproximateCondensed(SEXP ySEXP, SEXP lSEXP, SEXP wSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type l2(l2SEXP);
-    Rcpp::traits::input_parameter< Nullable<NumericVector> >::type w(wSEXP);
-    Rcpp::traits::input_parameter< int >::type max_seg_length(max_seg_lengthSEXP);
-    Rcpp::traits::input_parameter< int >::type average_range_length(average_range_lengthSEXP);
-    rcpp_result_gen = Rcpp::wrap(L0SqrtErrBreakPoints(y, l2, w, max_seg_length, average_range_length));
+    Rcpp::traits::input_parameter< NumericVector >::type l(lSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0PoissonApproximateCondensed(y, l, w));
     return rcpp_result_gen;
 END_RCPP
 }
-// L1SqrtErrFil
-NumericVector L1SqrtErrFil(NumericVector y, NumericVector l2, Nullable<NumericVector> weights);
-RcppExport SEXP _l01segmentation_L1SqrtErrFil(SEXP ySEXP, SEXP l2SEXP, SEXP weightsSEXP) {
+// L0GaussianApproximateCondensed
+List L0GaussianApproximateCondensed(NumericVector y, NumericVector l, NumericVector w);
+RcppExport SEXP _l01segmentation_L0GaussianApproximateCondensed(SEXP ySEXP, SEXP lSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type l(lSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0GaussianApproximateCondensed(y, l, w));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L0ExponentialApproximateCondensed
+List L0ExponentialApproximateCondensed(NumericVector y, NumericVector l, NumericVector w);
+RcppExport SEXP _l01segmentation_L0ExponentialApproximateCondensed(SEXP ySEXP, SEXP lSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type l(lSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0ExponentialApproximateCondensed(y, l, w));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L0PoissonApproximateN
+NumericVector L0PoissonApproximateN(NumericVector y, int N, NumericVector w);
+RcppExport SEXP _l01segmentation_L0PoissonApproximateN(SEXP ySEXP, SEXP NSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0PoissonApproximateN(y, N, w));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L0GaussianApproximateN
+NumericVector L0GaussianApproximateN(NumericVector y, int N, NumericVector w);
+RcppExport SEXP _l01segmentation_L0GaussianApproximateN(SEXP ySEXP, SEXP NSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0GaussianApproximateN(y, N, w));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L0ExponentialApproximateN
+NumericVector L0ExponentialApproximateN(NumericVector y, int N, NumericVector w);
+RcppExport SEXP _l01segmentation_L0ExponentialApproximateN(SEXP ySEXP, SEXP NSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0ExponentialApproximateN(y, N, w));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L0PoissonApproximateNCondensed
+List L0PoissonApproximateNCondensed(NumericVector y, int N, NumericVector w);
+RcppExport SEXP _l01segmentation_L0PoissonApproximateNCondensed(SEXP ySEXP, SEXP NSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0PoissonApproximateNCondensed(y, N, w));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L0GaussianApproximateNCondensed
+List L0GaussianApproximateNCondensed(NumericVector y, int N, NumericVector w);
+RcppExport SEXP _l01segmentation_L0GaussianApproximateNCondensed(SEXP ySEXP, SEXP NSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0GaussianApproximateNCondensed(y, N, w));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L0ExponentialApproximateNCondensed
+List L0ExponentialApproximateNCondensed(NumericVector y, int N, NumericVector w);
+RcppExport SEXP _l01segmentation_L0ExponentialApproximateNCondensed(SEXP ySEXP, SEXP NSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0ExponentialApproximateNCondensed(y, N, w));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L0PoissonBreakPoint
+int L0PoissonBreakPoint(NumericVector y, NumericVector w);
+RcppExport SEXP _l01segmentation_L0PoissonBreakPoint(SEXP ySEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0PoissonBreakPoint(y, w));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L0GaussianBreakPoint
+int L0GaussianBreakPoint(NumericVector y, NumericVector w);
+RcppExport SEXP _l01segmentation_L0GaussianBreakPoint(SEXP ySEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0GaussianBreakPoint(y, w));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L0ExponentialBreakPoint
+int L0ExponentialBreakPoint(NumericVector y, NumericVector w);
+RcppExport SEXP _l01segmentation_L0ExponentialBreakPoint(SEXP ySEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0ExponentialBreakPoint(y, w));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L1GaussianApproximate
+NumericVector L1GaussianApproximate(NumericVector y, NumericVector l2, Nullable<NumericVector> weights);
+RcppExport SEXP _l01segmentation_L1GaussianApproximate(SEXP ySEXP, SEXP l2SEXP, SEXP weightsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type l2(l2SEXP);
     Rcpp::traits::input_parameter< Nullable<NumericVector> >::type weights(weightsSEXP);
-    rcpp_result_gen = Rcpp::wrap(L1SqrtErrFil(y, l2, weights));
+    rcpp_result_gen = Rcpp::wrap(L1GaussianApproximate(y, l2, weights));
     return rcpp_result_gen;
 END_RCPP
 }
-// L1SqrtErrBreakPoints
-List L1SqrtErrBreakPoints(NumericVector y, NumericVector l2, Nullable<NumericVector> w);
-RcppExport SEXP _l01segmentation_L1SqrtErrBreakPoints(SEXP ySEXP, SEXP l2SEXP, SEXP wSEXP) {
+// L1GaussianApproximateCondensed
+List L1GaussianApproximateCondensed(NumericVector y, NumericVector l2, Nullable<NumericVector> w);
+RcppExport SEXP _l01segmentation_L1GaussianApproximateCondensed(SEXP ySEXP, SEXP l2SEXP, SEXP wSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type l2(l2SEXP);
     Rcpp::traits::input_parameter< Nullable<NumericVector> >::type w(wSEXP);
-    rcpp_result_gen = Rcpp::wrap(L1SqrtErrBreakPoints(y, l2, w));
+    rcpp_result_gen = Rcpp::wrap(L1GaussianApproximateCondensed(y, l2, w));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_l01segmentation_L1BinomialApproximate", (DL_FUNC) &_l01segmentation_L1BinomialApproximate, 3},
+    {"_l01segmentation_L1BinomialApproximateCondensed", (DL_FUNC) &_l01segmentation_L1BinomialApproximateCondensed, 3},
     {"_l01segmentation_gmm", (DL_FUNC) &_l01segmentation_gmm, 6},
     {"_l01segmentation_blockcoordinatedescent", (DL_FUNC) &_l01segmentation_blockcoordinatedescent, 5},
-    {"_l01segmentation_L0PoisErrSeg", (DL_FUNC) &_l01segmentation_L0PoisErrSeg, 5},
-    {"_l01segmentation_L0PoisBreakPoints", (DL_FUNC) &_l01segmentation_L0PoisBreakPoints, 5},
-    {"_l01segmentation_L0SqrtErrSeg", (DL_FUNC) &_l01segmentation_L0SqrtErrSeg, 5},
-    {"_l01segmentation_L0SqrtErrBreakPoints", (DL_FUNC) &_l01segmentation_L0SqrtErrBreakPoints, 5},
-    {"_l01segmentation_L1SqrtErrFil", (DL_FUNC) &_l01segmentation_L1SqrtErrFil, 3},
-    {"_l01segmentation_L1SqrtErrBreakPoints", (DL_FUNC) &_l01segmentation_L1SqrtErrBreakPoints, 3},
+    {"_l01segmentation_L0PoissonApproximate", (DL_FUNC) &_l01segmentation_L0PoissonApproximate, 3},
+    {"_l01segmentation_L0GaussianApproximate", (DL_FUNC) &_l01segmentation_L0GaussianApproximate, 3},
+    {"_l01segmentation_L0ExponentialApproximate", (DL_FUNC) &_l01segmentation_L0ExponentialApproximate, 3},
+    {"_l01segmentation_L0PoissonApproximateCondensed", (DL_FUNC) &_l01segmentation_L0PoissonApproximateCondensed, 3},
+    {"_l01segmentation_L0GaussianApproximateCondensed", (DL_FUNC) &_l01segmentation_L0GaussianApproximateCondensed, 3},
+    {"_l01segmentation_L0ExponentialApproximateCondensed", (DL_FUNC) &_l01segmentation_L0ExponentialApproximateCondensed, 3},
+    {"_l01segmentation_L0PoissonApproximateN", (DL_FUNC) &_l01segmentation_L0PoissonApproximateN, 3},
+    {"_l01segmentation_L0GaussianApproximateN", (DL_FUNC) &_l01segmentation_L0GaussianApproximateN, 3},
+    {"_l01segmentation_L0ExponentialApproximateN", (DL_FUNC) &_l01segmentation_L0ExponentialApproximateN, 3},
+    {"_l01segmentation_L0PoissonApproximateNCondensed", (DL_FUNC) &_l01segmentation_L0PoissonApproximateNCondensed, 3},
+    {"_l01segmentation_L0GaussianApproximateNCondensed", (DL_FUNC) &_l01segmentation_L0GaussianApproximateNCondensed, 3},
+    {"_l01segmentation_L0ExponentialApproximateNCondensed", (DL_FUNC) &_l01segmentation_L0ExponentialApproximateNCondensed, 3},
+    {"_l01segmentation_L0PoissonBreakPoint", (DL_FUNC) &_l01segmentation_L0PoissonBreakPoint, 2},
+    {"_l01segmentation_L0GaussianBreakPoint", (DL_FUNC) &_l01segmentation_L0GaussianBreakPoint, 2},
+    {"_l01segmentation_L0ExponentialBreakPoint", (DL_FUNC) &_l01segmentation_L0ExponentialBreakPoint, 2},
+    {"_l01segmentation_L1GaussianApproximate", (DL_FUNC) &_l01segmentation_L1GaussianApproximate, 3},
+    {"_l01segmentation_L1GaussianApproximateCondensed", (DL_FUNC) &_l01segmentation_L1GaussianApproximateCondensed, 3},
     {NULL, NULL, 0}
 };
 

@@ -1,31 +1,98 @@
-#include "util.h"
-#include <limits>
+#include "util.hpp"
+#include "range.hpp"
+#include <iterator>
 
-double inf = std::numeric_limits<double>::max();
-double neginf = -inf;
-double infmin = std::numeric_limits<double>::min();
-
-bool addRange(double * ranges, const double & val, int & ii, const int & max){
-    if (ii+1 > max){
-        return false;
-    }
-    ranges[ii] = val;
-    ii += 1;
-    return true;
-}
-
-void backtrace(const double * bstar, const double * ranges, const int * range_inds, const int & range_inds_len, double * sol){
-    sol[range_inds_len] = bstar[range_inds_len];
-    int s, e;
-    for (int i = range_inds_len-1; i > -1; i--){
-        s = range_inds[i];
-        e = range_inds[i+1];
-        sol[i] = sol[i+1];
-        for (int j = s; j < e; j++){
-            if (ranges[2*j] <= sol[i+1] && ranges[2*j+1] >= sol[i+1]){
-                sol[i] = bstar[i];
+void backtrace(const RangeList& ranges, const double* xprimes, double* solution){
+    int n = ranges.len() + 1;
+    double first, last;
+    solution[n-1] = xprimes[n-1];
+    for(int i = n-2; i >= 0; i--){
+        solution[i] = solution[i+1];
+        for(int j = 0; j < ranges.len(i); j++){
+            ranges.index(i, j, first, last);
+            if(first <= solution[i+1] && solution[i+1] <= last){
+                solution[i] = xprimes[i];
                 break;
             }
         }
     }
 }
+
+void backtrace(const RangeList& ranges, const double* xprimes, int& k, int* start, int* end, double* value){
+    int n = ranges.len() + 1;
+    double first, last;
+    k = 0;
+    value[k] = xprimes[n-1];
+    end[k] = n;
+    for(int i = n-2; i >= 0; i--){
+        for(int j = 0; j < ranges.len(i); j++){
+            ranges.index(i, j, first, last);
+            if(first <= value[k] && value[k] <= last){
+                start[k] = i+1;
+                k++;
+                value[k] = xprimes[i];
+                end[k] = i+1;
+                break;
+            }
+        }
+    }
+    start[k] = 0;
+    k++;
+}
+
+void backtrace(const RangeList* ranges, const int& N, const double* xprimes, double* solution){
+    int n = ranges[0].len() + 1;
+    int T = N - 1;
+    double first, last;
+    solution[n-1] = xprimes[n*N-1];
+    for(int i = n-2; i >= 0; i--){
+        solution[i] = solution[i+1];
+        for(int j = 0; j < ranges[T].len(i); j++){
+            ranges[T].index(i, j, first, last);
+            if(first <= solution[i+1] && solution[i+1] <= last){
+                solution[i] = xprimes[i*N+T];
+                T--;
+                break;
+            }
+        }
+    }
+}
+
+void backtrace(const RangeList* ranges, const int& N, const double* xprimes, int* start, int* end, double* value){
+    int n = ranges[0].len() + 1;
+    int T = N - 1;
+    double first, last;
+    int k = 0;
+    value[k] = xprimes[n*N-1];
+    end[k] = n;
+    for(int i = n-2; i >= 0; i--){
+        for(int j = 0; j < ranges[T].len(i); j++){
+            ranges[T].index(i, j, first, last);
+            if(first <= value[k] && value[k] <= last){
+                start[k] = i+1;
+                k++;
+                value[k] = xprimes[i*N+T];
+                end[k] = i+1;
+                T--;
+                break;
+            }
+        }
+    }
+    start[k] = 0;
+    k++;
+}
+
+int backtrace(const RangeList& ranges, const double& xprime){
+    int n = ranges.len() + 1;
+    double first, last;
+    for(int i = n-2; i >= 0; i--){
+        for(int j = 0; j < ranges.len(i); j++){
+            ranges.index(i, j, first, last);
+            if(first <= xprime && xprime <= last){
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
