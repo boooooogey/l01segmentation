@@ -1,7 +1,8 @@
 // [[Rcpp::depends(BH)]]
-#include "squarederror.hpp"
-#include "poissonerror.hpp"
+#include "binomialerror.hpp"
 #include "exponentialerror.hpp"
+#include "poissonerror.hpp"
+#include "squarederror.hpp"
 #include "piecewisefunction.hpp"
 #include "range.hpp"
 #include "util.hpp"
@@ -30,6 +31,14 @@ NumericVector L0ExponentialApproximate(NumericVector y, NumericVector l, Numeric
     int n = y.size();
     NumericVector x = NumericVector(n);
     approximate<ExponentialError>(n, y.begin(), l.begin(), w.begin(), x.begin());
+    return x;
+}
+
+//[[Rcpp::export]]
+NumericVector L0BinomialApproximate(NumericVector y, NumericVector l, NumericVector w){
+    int n = y.size()/2;
+    NumericVector x = NumericVector(n);
+    approximate<BinomialError>(n, y.begin(), l.begin(), w.begin(), x.begin());
     return x;
 }
 
@@ -67,6 +76,17 @@ List L0ExponentialApproximateCondensed(NumericVector y, NumericVector l, Numeric
 }
 
 //[[Rcpp::export]]
+List L0BinomialApproximateCondensed(NumericVector y, NumericVector l, NumericVector w){
+    int n = y.size()/2;
+    int k;
+    NumericVector val = NumericVector(n);
+    IntegerVector start = IntegerVector(n);
+    IntegerVector end = IntegerVector(n);
+    approximate<BinomialError>(n, y.begin(), l.begin(), w.begin(), k, start.begin(), end.begin(), val.begin());
+    return List::create(Named("values") = val[Rcpp::Range(0, k-1)] , Named("start") = start[Rcpp::Range(0, k-1)], Named("end") = end[Rcpp::Range(0, k-1)]);
+}
+
+//[[Rcpp::export]]
 NumericVector L0PoissonApproximateN(NumericVector y, int N, NumericVector w){
     int n = y.size();
     NumericVector x = NumericVector(n);
@@ -87,6 +107,14 @@ NumericVector L0ExponentialApproximateN(NumericVector y, int N, NumericVector w)
     int n = y.size();
     NumericVector x = NumericVector(n);
     approximate<ExponentialError>(n, y.begin(), N, w.begin(), x.begin());
+    return x;
+}
+
+//[[Rcpp::export]]
+NumericVector L0BinomialApproximateN(NumericVector y, int N, NumericVector w){
+    int n = y.size()/2;
+    NumericVector x = NumericVector(n);
+    approximate<BinomialError>(n, y.begin(), N, w.begin(), x.begin());
     return x;
 }
 
@@ -121,6 +149,16 @@ List L0ExponentialApproximateNCondensed(NumericVector y, int N, NumericVector w)
 }
 
 //[[Rcpp::export]]
+List L0BinomialApproximateNCondensed(NumericVector y, int N, NumericVector w){
+    int n = y.size()/2;
+    NumericVector val = NumericVector(N);
+    IntegerVector start = IntegerVector(N);
+    IntegerVector end = IntegerVector(N);
+    approximate<BinomialError>(n, y.begin(), N, w.begin(), start.begin(), end.begin(), val.begin());
+    return List::create(Named("values") = val , Named("start") = start, Named("end") = end);
+}
+
+//[[Rcpp::export]]
 int L0PoissonBreakPoint(NumericVector y, NumericVector w){
     int n = y.size();
     return findbreakpoint<PoissonError>(n, y.begin(), w.begin());
@@ -136,4 +174,10 @@ int L0GaussianBreakPoint(NumericVector y, NumericVector w){
 int L0ExponentialBreakPoint(NumericVector y, NumericVector w){
     int n = y.size();
     return findbreakpoint<ExponentialError>(n, y.begin(), w.begin());
+}
+
+//[[Rcpp::export]]
+int L0BinomialBreakPoint(NumericVector y, NumericVector w){
+    int n = y.size()/2;
+    return findbreakpoint<BinomialError>(n, y.begin(), w.begin());
 }

@@ -2,10 +2,10 @@
 #include "function.hpp"
 #include <limits>
 
-class PoissonError : Function
+class BinomialError : Function
 {
     private:
-        //a x + b exp(x) + c
+        //a log(x) + b log(1 - x) + c
         double a;
         double b;
         double c;
@@ -14,16 +14,16 @@ class PoissonError : Function
         static double rangeninf;
         static double domaininf;
         static double domainninf;
-        PoissonError();
-        PoissonError(const PoissonError& other);
+        BinomialError();
+        BinomialError(const BinomialError& other);
         void set(const double* y, const double* w, const int& i);
         void set(const double& t);
-        PoissonError& operator=(const PoissonError& other);
-        PoissonError& operator+=(const PoissonError& rhs);
+        BinomialError& operator=(const BinomialError& other);
+        BinomialError& operator+=(const BinomialError& rhs);
         double operator()(const double& x);
         bool max(double& xprime, double& yprime);
         void solve(const double& t, double& left, double& right, bool& leftexists, bool& rightexists);
         static void converter(double* x, const int& n);
 };
 
-PoissonError operator+(PoissonError lhs, const PoissonError& rhs);
+BinomialError operator+(BinomialError lhs, const BinomialError& rhs);

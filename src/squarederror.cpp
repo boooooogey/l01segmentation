@@ -20,9 +20,9 @@ SquaredError::SquaredError(const SquaredError& other){
     c = other.c;
 }
 
-void SquaredError::set(const double& y, const double& w){
-    a = -w;
-    b = 2 * y * w;
+void SquaredError::set(const double* y, const double* w, const int& i){
+    a = -w[i];
+    b = 2 * y[i] * w[i];
     c = 0;
 }
 

@@ -16,7 +16,7 @@ class ExponentialError : Function
         static double domainninf;
         ExponentialError();
         ExponentialError(const ExponentialError& other);
-        void set(const double& y, const double& w);
+        void set(const double* y, const double* w, const int& i);
         void set(const double& t);
         ExponentialError& operator=(const ExponentialError& other);
         ExponentialError& operator+=(const ExponentialError& rhs);

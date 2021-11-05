@@ -13,7 +13,7 @@ void approximate(const int& n, const double* y, const double* lambda, const doub
     PiecewiseFunction<T> f;
     PiecewiseFunction<T> g;
 
-    f.append(y[0], w[0], T::domainninf);
+    f.append(y, w, T::domainninf, 0);
     f.append(T::rangeninf, T::domaininf);
 
     RangeList ranges(n-1);
@@ -26,7 +26,7 @@ void approximate(const int& n, const double* y, const double* lambda, const doub
     for(int i = 1; i < n; i++){
         f.max(xprimes[i-1], yprime);
         f.flood(yprime - lambda[i-1], g, ranges[i-1]);
-        tmp.set(y[i], w[i]);
+        tmp.set(y, w, i);
         f = g + tmp;
     }
     f.max(xprimes[n-1], yprime);
@@ -41,7 +41,7 @@ void approximate(const int& n, const double* y, const double* lambda, const doub
     PiecewiseFunction<T> f;
     PiecewiseFunction<T> g;
 
-    f.append(y[0], w[0], T::domainninf);
+    f.append(y, w, T::domainninf, 0);
     f.append(T::rangeninf, T::domaininf);
 
     RangeList ranges(n-1);
@@ -54,7 +54,7 @@ void approximate(const int& n, const double* y, const double* lambda, const doub
     for(int i = 1; i < n; i++){
         f.max(xprimes[i-1], yprime);
         f.flood(yprime - lambda[i-1], g, ranges[i-1]);
-        tmp.set(y[i], w[i]);
+        tmp.set(y, w, i);
         f = g + tmp;
     }
     f.max(xprimes[n-1], yprime);
@@ -70,7 +70,7 @@ void approximate(const int& n, const double* y, const int& N, const double* w, d
     PiecewiseFunction<T>* fs = new PiecewiseFunction<T>[N];
     PiecewiseFunction<T>* gs = new PiecewiseFunction<T>[N];
     for(int i = 0; i < N; i++){
-        fs[i].append(y[0], w[0], T::domainninf);
+        fs[i].append(y, w, T::domainninf, 0);
         fs[i].append(T::rangeninf, T::domaininf);
     }
 
@@ -100,7 +100,7 @@ void approximate(const int& n, const double* y, const int& N, const double* w, d
             else{
                 fs[j].flood(yprime, gs[j], ranges[j][i-1]);
             }
-            tmp.set(y[i], w[i]);
+            tmp.set(y, w, i);
             fs[j] = gs[j] + tmp;
         }
     }
@@ -119,7 +119,7 @@ void approximate(const int& n, const double* y, const int& N, const double* w, i
     PiecewiseFunction<T>* fs = new PiecewiseFunction<T>[N];
     PiecewiseFunction<T>* gs = new PiecewiseFunction<T>[N];
     for(int i = 0; i < N; i++){
-        fs[i].append(y[0], w[0], T::domainninf);
+        fs[i].append(y, w, T::domainninf, 0);
         fs[i].append(T::rangeninf, T::domaininf);
     }
 
@@ -149,7 +149,7 @@ void approximate(const int& n, const double* y, const int& N, const double* w, i
             else{
                 fs[j].flood(yprime, gs[j], ranges[j][i-1]);
             }
-            tmp.set(y[i], w[i]);
+            tmp.set(y, w, i);
             fs[j] = gs[j] + tmp;
         }
     }
@@ -168,7 +168,7 @@ int findbreakpoint(const int& n, const double* y, const double* w){
     PiecewiseFunction<T>* fs = new PiecewiseFunction<T>[2];
     PiecewiseFunction<T>* gs = new PiecewiseFunction<T>[2];
     for(int i = 0; i < 2; i++){
-        fs[i].append(y[0], w[0], T::domainninf);
+        fs[i].append(y, w, T::domainninf, 0);
         fs[i].append(T::rangeninf, T::domaininf);
     }
 
@@ -196,7 +196,7 @@ int findbreakpoint(const int& n, const double* y, const double* w){
             else{
                 gs[j] = fs[j];
             }
-            tmp.set(y[i], w[i]);
+            tmp.set(y, w, i);
             fs[j] = gs[j] + tmp;
         }
     }

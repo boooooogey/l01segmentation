@@ -21,9 +21,9 @@ PoissonError::PoissonError(const PoissonError& other){
     c = other.c;
 }
 
-void PoissonError::set(const double& y, const double& w){
-    a = y * w;
-    b = -w;
+void PoissonError::set(const double* y, const double* w, const int& i){
+    a = y[i] * w[i];
+    b = -w[i];
     c = 0;
 }
 

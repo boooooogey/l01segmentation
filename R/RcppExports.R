@@ -29,6 +29,10 @@ L0ExponentialApproximate <- function(y, l, w) {
     .Call(`_l01segmentation_L0ExponentialApproximate`, y, l, w)
 }
 
+L0BinomialApproximate <- function(y, l, w) {
+    .Call(`_l01segmentation_L0BinomialApproximate`, y, l, w)
+}
+
 L0PoissonApproximateCondensed <- function(y, l, w) {
     .Call(`_l01segmentation_L0PoissonApproximateCondensed`, y, l, w)
 }
@@ -39,6 +43,10 @@ L0GaussianApproximateCondensed <- function(y, l, w) {
 
 L0ExponentialApproximateCondensed <- function(y, l, w) {
     .Call(`_l01segmentation_L0ExponentialApproximateCondensed`, y, l, w)
+}
+
+L0BinomialApproximateCondensed <- function(y, l, w) {
+    .Call(`_l01segmentation_L0BinomialApproximateCondensed`, y, l, w)
 }
 
 L0PoissonApproximateN <- function(y, N, w) {
@@ -53,6 +61,10 @@ L0ExponentialApproximateN <- function(y, N, w) {
     .Call(`_l01segmentation_L0ExponentialApproximateN`, y, N, w)
 }
 
+L0BinomialApproximateN <- function(y, N, w) {
+    .Call(`_l01segmentation_L0BinomialApproximateN`, y, N, w)
+}
+
 L0PoissonApproximateNCondensed <- function(y, N, w) {
     .Call(`_l01segmentation_L0PoissonApproximateNCondensed`, y, N, w)
 }
@@ -65,6 +77,10 @@ L0ExponentialApproximateNCondensed <- function(y, N, w) {
     .Call(`_l01segmentation_L0ExponentialApproximateNCondensed`, y, N, w)
 }
 
+L0BinomialApproximateNCondensed <- function(y, N, w) {
+    .Call(`_l01segmentation_L0BinomialApproximateNCondensed`, y, N, w)
+}
+
 L0PoissonBreakPoint <- function(y, w) {
     .Call(`_l01segmentation_L0PoissonBreakPoint`, y, w)
 }
@@ -75,6 +91,10 @@ L0GaussianBreakPoint <- function(y, w) {
 
 L0ExponentialBreakPoint <- function(y, w) {
     .Call(`_l01segmentation_L0ExponentialBreakPoint`, y, w)
+}
+
+L0BinomialBreakPoint <- function(y, w) {
+    .Call(`_l01segmentation_L0BinomialBreakPoint`, y, w)
 }
 
 L1GaussianApproximate <- function(y, l2, weights = NULL) {

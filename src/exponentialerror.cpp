@@ -21,9 +21,9 @@ ExponentialError::ExponentialError(const ExponentialError& other){
     c = other.c;
 }
 
-void ExponentialError::set(const double& y, const double& w){
-    a = w;
-    b = -w*y;
+void ExponentialError::set(const double* y, const double* w, const int& i){
+    a = w[i];
+    b = -w[i]*y[i];
     c = 0;
 }
 

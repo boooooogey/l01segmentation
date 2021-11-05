@@ -107,6 +107,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// L0BinomialApproximate
+NumericVector L0BinomialApproximate(NumericVector y, NumericVector l, NumericVector w);
+RcppExport SEXP _l01segmentation_L0BinomialApproximate(SEXP ySEXP, SEXP lSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type l(lSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0BinomialApproximate(y, l, w));
+    return rcpp_result_gen;
+END_RCPP
+}
 // L0PoissonApproximateCondensed
 List L0PoissonApproximateCondensed(NumericVector y, NumericVector l, NumericVector w);
 RcppExport SEXP _l01segmentation_L0PoissonApproximateCondensed(SEXP ySEXP, SEXP lSEXP, SEXP wSEXP) {
@@ -143,6 +156,19 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type l(lSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
     rcpp_result_gen = Rcpp::wrap(L0ExponentialApproximateCondensed(y, l, w));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L0BinomialApproximateCondensed
+List L0BinomialApproximateCondensed(NumericVector y, NumericVector l, NumericVector w);
+RcppExport SEXP _l01segmentation_L0BinomialApproximateCondensed(SEXP ySEXP, SEXP lSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type l(lSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0BinomialApproximateCondensed(y, l, w));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -185,6 +211,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// L0BinomialApproximateN
+NumericVector L0BinomialApproximateN(NumericVector y, int N, NumericVector w);
+RcppExport SEXP _l01segmentation_L0BinomialApproximateN(SEXP ySEXP, SEXP NSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0BinomialApproximateN(y, N, w));
+    return rcpp_result_gen;
+END_RCPP
+}
 // L0PoissonApproximateNCondensed
 List L0PoissonApproximateNCondensed(NumericVector y, int N, NumericVector w);
 RcppExport SEXP _l01segmentation_L0PoissonApproximateNCondensed(SEXP ySEXP, SEXP NSEXP, SEXP wSEXP) {
@@ -224,6 +263,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// L0BinomialApproximateNCondensed
+List L0BinomialApproximateNCondensed(NumericVector y, int N, NumericVector w);
+RcppExport SEXP _l01segmentation_L0BinomialApproximateNCondensed(SEXP ySEXP, SEXP NSEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0BinomialApproximateNCondensed(y, N, w));
+    return rcpp_result_gen;
+END_RCPP
+}
 // L0PoissonBreakPoint
 int L0PoissonBreakPoint(NumericVector y, NumericVector w);
 RcppExport SEXP _l01segmentation_L0PoissonBreakPoint(SEXP ySEXP, SEXP wSEXP) {
@@ -257,6 +309,18 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
     rcpp_result_gen = Rcpp::wrap(L0ExponentialBreakPoint(y, w));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L0BinomialBreakPoint
+int L0BinomialBreakPoint(NumericVector y, NumericVector w);
+RcppExport SEXP _l01segmentation_L0BinomialBreakPoint(SEXP ySEXP, SEXP wSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0BinomialBreakPoint(y, w));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -295,18 +359,23 @@ static const R_CallMethodDef CallEntries[] = {
     {"_l01segmentation_L0PoissonApproximate", (DL_FUNC) &_l01segmentation_L0PoissonApproximate, 3},
     {"_l01segmentation_L0GaussianApproximate", (DL_FUNC) &_l01segmentation_L0GaussianApproximate, 3},
     {"_l01segmentation_L0ExponentialApproximate", (DL_FUNC) &_l01segmentation_L0ExponentialApproximate, 3},
+    {"_l01segmentation_L0BinomialApproximate", (DL_FUNC) &_l01segmentation_L0BinomialApproximate, 3},
     {"_l01segmentation_L0PoissonApproximateCondensed", (DL_FUNC) &_l01segmentation_L0PoissonApproximateCondensed, 3},
     {"_l01segmentation_L0GaussianApproximateCondensed", (DL_FUNC) &_l01segmentation_L0GaussianApproximateCondensed, 3},
     {"_l01segmentation_L0ExponentialApproximateCondensed", (DL_FUNC) &_l01segmentation_L0ExponentialApproximateCondensed, 3},
+    {"_l01segmentation_L0BinomialApproximateCondensed", (DL_FUNC) &_l01segmentation_L0BinomialApproximateCondensed, 3},
     {"_l01segmentation_L0PoissonApproximateN", (DL_FUNC) &_l01segmentation_L0PoissonApproximateN, 3},
     {"_l01segmentation_L0GaussianApproximateN", (DL_FUNC) &_l01segmentation_L0GaussianApproximateN, 3},
     {"_l01segmentation_L0ExponentialApproximateN", (DL_FUNC) &_l01segmentation_L0ExponentialApproximateN, 3},
+    {"_l01segmentation_L0BinomialApproximateN", (DL_FUNC) &_l01segmentation_L0BinomialApproximateN, 3},
     {"_l01segmentation_L0PoissonApproximateNCondensed", (DL_FUNC) &_l01segmentation_L0PoissonApproximateNCondensed, 3},
     {"_l01segmentation_L0GaussianApproximateNCondensed", (DL_FUNC) &_l01segmentation_L0GaussianApproximateNCondensed, 3},
     {"_l01segmentation_L0ExponentialApproximateNCondensed", (DL_FUNC) &_l01segmentation_L0ExponentialApproximateNCondensed, 3},
+    {"_l01segmentation_L0BinomialApproximateNCondensed", (DL_FUNC) &_l01segmentation_L0BinomialApproximateNCondensed, 3},
     {"_l01segmentation_L0PoissonBreakPoint", (DL_FUNC) &_l01segmentation_L0PoissonBreakPoint, 2},
     {"_l01segmentation_L0GaussianBreakPoint", (DL_FUNC) &_l01segmentation_L0GaussianBreakPoint, 2},
     {"_l01segmentation_L0ExponentialBreakPoint", (DL_FUNC) &_l01segmentation_L0ExponentialBreakPoint, 2},
+    {"_l01segmentation_L0BinomialBreakPoint", (DL_FUNC) &_l01segmentation_L0BinomialBreakPoint, 2},
     {"_l01segmentation_L1GaussianApproximate", (DL_FUNC) &_l01segmentation_L1GaussianApproximate, 3},
     {"_l01segmentation_L1GaussianApproximateCondensed", (DL_FUNC) &_l01segmentation_L1GaussianApproximateCondensed, 3},
     {NULL, NULL, 0}

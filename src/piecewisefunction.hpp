@@ -18,7 +18,7 @@ class PiecewiseFunction
         void resize();
         void reset();
         void append(const T& piece, const double& knot);
-        void append(const double& y, const double& w, const double& knot);
+        void append(const double* y, const double* w, const double& knot, const int& i);
         void append(const double& t, const double& knot);
         void index(const int& i, T& piece, double& knot);
         int len();
@@ -98,12 +98,12 @@ void PiecewiseFunction<T>::append(const T& piece, const double& knot){
 }
 
 template <class T>
-void PiecewiseFunction<T>::append(const double& y, const double& w, const double& knot){
+void PiecewiseFunction<T>::append(const double* y, const double* w, const double& knot, const int& i){
     if (length == capacity){
         capacity = capacity * 2;
         resize();
     }
-    pieces[length].set(y, w);
+    pieces[length].set(y, w, i);
     knots[length]  = knot;
     length++;
 }

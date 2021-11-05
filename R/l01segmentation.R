@@ -156,7 +156,29 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
             stop("Missing data: C (coverage) is 0 for some indices.")
         }
         if(l == 0){
-            stop("Not implemented.")
+            y = as.vector(rbind(y,C))
+            if (format == "compressed"){
+                if(is.null(N)){
+                    breakpoints = L0BinomialApproximateCondensed(y, lambda2, weight)
+                    breakpoints$start = rev(breakpoints$start)
+                    breakpoints$end = rev(breakpoints$end)
+                    breakpoints$values = rev(breakpoints$values)
+                }
+                else{
+                    breakpoints = L0BinomialApproximateNCondensed(y, N, weight)
+                    breakpoints$start = rev(breakpoints$start)
+                    breakpoints$end = rev(breakpoints$end)
+                    breakpoints$values = rev(breakpoints$values)
+                }
+            }
+            else{
+                if(is.null(N)){
+                    signal = L0BinomialApproximate(y, lambda2, weight)
+                }
+                else{
+                    signal = L0BinomialApproximateN(y, N, weight)
+                }
+            }
         }
         else{
             if (format == "compressed"){

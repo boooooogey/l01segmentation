@@ -16,7 +16,7 @@ class SquaredError : Function
         static double domainninf;
         SquaredError();
         SquaredError(const SquaredError& other);
-        void set(const double& y, const double& w);
+        void set(const double* y, const double* w, const int& i);
         void set(const double& t);
         SquaredError& operator=(const SquaredError& other);
         SquaredError& operator+=(const SquaredError& rhs);
