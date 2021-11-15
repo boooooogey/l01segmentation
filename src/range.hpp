@@ -1,10 +1,9 @@
 #pragma once
+#include <vector>
 
 class Range{
     private:
-        double* data;
-        int length;
-        int capacity;
+        std::vector<double> data;
     public:
         Range(int capacity = 5);
         Range(const Range& other);
@@ -16,7 +15,7 @@ class Range{
 
 class RangeList{
     private:
-        Range* data;
+        std::vector<Range> data;
         int length;
     public:
         RangeList();

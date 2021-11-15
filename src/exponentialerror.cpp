@@ -21,6 +21,18 @@ ExponentialError::ExponentialError(const ExponentialError& other){
     c = other.c;
 }
 
+ExponentialError::ExponentialError(const double* y, const double* w, const int& i){
+    a = w[i];
+    b = -w[i]*y[i];
+    c = 0;
+}
+
+ExponentialError::ExponentialError(const double& t){
+    a = 0;
+    b = 0;
+    c = t;
+}
+
 void ExponentialError::set(const double* y, const double* w, const int& i){
     a = w[i];
     b = -w[i]*y[i];

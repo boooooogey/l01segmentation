@@ -2,13 +2,14 @@
 #include "range.hpp"
 #include <iterator>
 #include <limits>
+#include <vector>
 
 template <class T>
 class PiecewiseFunction
 {
     private:
-        double* knots;
-        T* pieces;
+        std::vector<double> knots;
+        std::vector<T> pieces;
         int length;
         int capacity;
     public:
@@ -32,26 +33,20 @@ class PiecewiseFunction
 
 template <class T>
 PiecewiseFunction<T>::PiecewiseFunction(){
-    capacity = 10;
+    this->pieces.reserve(10);
 
-    this->pieces = new T[capacity];
-
-    this->knots = new double[capacity];
-
-    this->length = 0;
+    this->knots.reserve(10);
 }
 
 template <class T>
 PiecewiseFunction<T>::PiecewiseFunction(const T* pieces, const double* knots, const int& length){
-    capacity = length * 2;
+    this->pieces.resize(length);
+    this->knots.resize(length);
 
-    this->pieces = new T[capacity];
-    std::copy(pieces, pieces+length, this->pieces);
+    std::copy(pieces, pieces+length, this->pieces.begin());
 
-    this->knots = new double[capacity];
-    std::copy(knots, knots+length, this->knots);
+    std::copy(knots, knots+length, this->knots.begin());
 
-    this->length = length;
 }
 
 template <class T>
@@ -59,64 +54,33 @@ PiecewiseFunction<T>::PiecewiseFunction(const PiecewiseFunction& other){
     if(this != &other){
         length = other.length;
         capacity = other.capacity;
-
-        pieces = new T[capacity];
-        std::copy(other.pieces, other.pieces + length, pieces);
-
-        knots = new double[capacity];
-        std::copy(other.knots, other.knots + length, knots);
+        pieces = other.pieces;
+        knots = other.knots;
     }
-}
-
-template <class T>
-void PiecewiseFunction<T>::resize(){
-    T* tmppieces = pieces;
-    pieces = new T[capacity];
-    std::copy(tmppieces, tmppieces + length, pieces);
-    delete[] tmppieces;
-
-    double* tmpknots = knots;
-    knots = new double[capacity];
-    std::copy(tmpknots, tmpknots + length, knots);
-    delete[] tmpknots;
 }
 
 template <class T>
 void PiecewiseFunction<T>::reset(){
-    length = 0;
+    pieces.resize(0);
+    knots.resize(0);
 }
 
 template <class T>
 void PiecewiseFunction<T>::append(const T& piece, const double& knot){
-    if (length == capacity){
-        capacity = capacity * 2;
-        resize();
-    }
-    pieces[length] = piece;
-    knots[length]  = knot;
-    length++;
+    pieces.push_back(piece);
+    knots.push_back(knot);
 }
 
 template <class T>
 void PiecewiseFunction<T>::append(const double* y, const double* w, const double& knot, const int& i){
-    if (length == capacity){
-        capacity = capacity * 2;
-        resize();
-    }
-    pieces[length].set(y, w, i);
-    knots[length]  = knot;
-    length++;
+    pieces.push_back(T(y, w, i));
+    knots.push_back(knot);
 }
 
 template <class T>
 void PiecewiseFunction<T>::append(const double& t, const double& knot){
-    if (length == capacity){
-        capacity = capacity * 2;
-        resize();
-    }
-    pieces[length].set(t);
-    knots[length]  = knot;
-    length++;
+    pieces.push_back(T(t));
+    knots.push_back(knot);
 }
 
 template <class T>
@@ -131,31 +95,21 @@ void PiecewiseFunction<T>::index(const int& i, T& piece, double& knot){
 
 template <class T>
 int PiecewiseFunction<T>::len(){
-    return length;
+    return pieces.size();
 }
 
 template <class T>
 PiecewiseFunction<T>& PiecewiseFunction<T>::operator=(const PiecewiseFunction<T>& other){
-    if(this == &other)
-        return *this;
-    if(capacity > other.length)
-        length = other.length;
-    else{
-        delete[] pieces;
-        delete[] knots;
-        length = other.length;
-        capacity = other.capacity;
-        pieces = new T[capacity];
-        knots = new double[capacity];
-    }
-    std::copy(other.pieces, other.pieces + length, pieces);
-    std::copy(other.knots, other.knots + length, knots);
+    pieces.resize(other.pieces.size());
+    knots.resize(other.knots.size());
+    std::copy(other.pieces.begin(), other.pieces.end(), pieces.begin());
+    std::copy(other.knots.begin(), other.knots.end(), knots.begin());
     return *this;
 }
 
 template <class T>
 PiecewiseFunction<T>& PiecewiseFunction<T>::operator+=(const T& rhs){
-    for(int i = 0; i < length; i++){
+    for(int i = 0; i < this->pieces.size(); i++){
         this->pieces[i] += rhs;
     }
     return *this;
@@ -175,11 +129,11 @@ PiecewiseFunction<T> operator+(const T& lhs, PiecewiseFunction<T> rhs){
 
 template <class T>
 double PiecewiseFunction<T>::operator()(const double& x){
-    if(length == 1){
+    if(pieces.size() == 1){
         return pieces[0](x);
     } 
     int k = 0;
-    for(int i = 1; i < length; i++){
+    for(int i = 1; i < pieces.size(); i++){
         if (x > knots[i]){
             k++;
         }
@@ -196,7 +150,7 @@ void PiecewiseFunction<T>::max(double& xprime, double& yprime){
     xprime = 0;
     double ycurr = 0;
     double xcurr = 0;
-    for(int i = 0; i < length; i++){
+    for(int i = 0; i < pieces.size(); i++){
         pieces[i].max(xcurr, ycurr);
         if(i != length-1 && xcurr > knots[i+1]){
             xcurr = knots[i+1];
@@ -231,7 +185,7 @@ void PiecewiseFunction<T>::flood(const double& threshold, PiecewiseFunction<T>& 
         underwater = false;
     }
 
-    for(int i = 0; i < length-1; i++){
+    for(int i = 0; i < pieces.size()-1; i++){
         pieces[i].solve(threshold, left, right, leftexists, rightexists);
         if(underwater && leftexists && left < knots[i+1] && left > knots[i]){
             out.append(pieces[i], left);
@@ -257,7 +211,5 @@ void PiecewiseFunction<T>::flood(const double& threshold, PiecewiseFunction<T>& 
 
 template <class T>
 PiecewiseFunction<T>::~PiecewiseFunction(){
-    delete[] pieces;
-    delete[] knots;
 }
 

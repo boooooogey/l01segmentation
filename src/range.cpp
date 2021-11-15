@@ -2,40 +2,27 @@
 #include <iterator>
 
 Range::Range(int capacity){
-    this->capacity = 2 * capacity;
-    data = new double[this->capacity];
-    length = 0;
+    data.reserve(2 * capacity);
+    data.resize(0);
 }
 
 Range::Range(const Range& other){
     if(this != &other){
-        length = other.length;
-        capacity = other.capacity;
-        data = new double[capacity];
-        std::copy(other.data, other.data + length, data);
+        data = other.data;
     }
 }
 
 int Range::len() const{
-    return length;
+    return data.size()/2;
 }
 
 void Range::add(const double& first, const double& last){
-    if(length == capacity){
-        capacity = 2 * capacity;
-
-        double* tmpdata = data;
-        data = new double[capacity];
-        std::copy(tmpdata, tmpdata+length, data);
-        delete[] tmpdata;
-    }
-    data[2*length] = first;
-    data[2*length + 1] = last;
-    length++;
+    data.push_back(first);
+    data.push_back(last);
 }
 
 void Range::index(const int& i, double& first, double& last) const{
-    if(length-1 < i){
+    if(data.size()-1 < i){
         return;
     }
     else{
@@ -45,38 +32,29 @@ void Range::index(const int& i, double& first, double& last) const{
 }
 
 Range::~Range(){
-    delete[] data;
 }
 
 RangeList::RangeList(){
-    length = 0;
-    data = nullptr;
+    data.resize(0);
 }
 
 RangeList::RangeList(const int& length){
-    this->length = length;
-    data = new Range[this->length];
+    data.reserve(length);
+    data.resize(length);
 }
 
 RangeList::RangeList(const RangeList& other){
     if(this != &other){
-        length = other.length;
-        delete[] data;
-        data = new Range[length];
-        std::copy(other.data, other.data + length, data);
+        data = other.data;
     }
 }
 
 void RangeList::resize(const int& length){
-    if(data != nullptr){
-        delete[] data;
-    }
-    this->length = length;
-    data = new Range[this->length];
+    data.resize(length);
 }
 
 int RangeList::len() const{
-    return length;
+    return data.size(); 
 }
 
 int RangeList::len(const int& i) const{
@@ -84,12 +62,12 @@ int RangeList::len(const int& i) const{
 }
 
 void RangeList::add(const int& i, const double& first, const double& last){
-    if(0 <= i && i < length)
+    if(0 <= i && i < data.size())
         data[i].add(first, last);
 }
 
 void RangeList::index(const int& i, const int& j, double& first, double& last) const{
-    if(length-1 < i || i < 0){
+    if(data.size()-1 < i || i < 0){
         return;
     }
     else{
@@ -102,5 +80,4 @@ Range& RangeList::operator[](const int& i){
 }
 
 RangeList::~RangeList(){
-    delete[] data;
 }

@@ -7,6 +7,7 @@
 #include "range.hpp"
 #include "util.hpp"
 #include <Rcpp.h>
+#include <vector>
 
 using namespace Rcpp;
 

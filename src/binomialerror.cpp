@@ -52,6 +52,18 @@ BinomialError::BinomialError(const BinomialError& other){
     c = other.c;
 }
 
+BinomialError::BinomialError(const double* y, const double* w, const int& i){
+    a = y[2*i] * w[i];
+    b = (y[2*i+1] - y[2*i]) * w[i];
+    c = 0;
+}
+
+BinomialError::BinomialError(const double& t){
+    a = 0;
+    b = 0;
+    c = t;
+}
+
 void BinomialError::set(const double* y, const double* w, const int& i){
     a = y[2*i] * w[i];
     b = (y[2*i+1] - y[2*i]) * w[i];

@@ -16,6 +16,8 @@ class PoissonError : Function
         static double domainninf;
         PoissonError();
         PoissonError(const PoissonError& other);
+        PoissonError(const double* y, const double* w, const int& i);
+        PoissonError(const double& t);
         void set(const double* y, const double* w, const int& i);
         void set(const double& t);
         PoissonError& operator=(const PoissonError& other);

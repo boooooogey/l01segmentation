@@ -16,6 +16,8 @@ class BinomialError : Function
         static double domainninf;
         BinomialError();
         BinomialError(const BinomialError& other);
+        BinomialError(const double* y, const double* w, const int& i);
+        BinomialError(const double& t);
         void set(const double* y, const double* w, const int& i);
         void set(const double& t);
         BinomialError& operator=(const BinomialError& other);
