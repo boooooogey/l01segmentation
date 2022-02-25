@@ -9,10 +9,6 @@ L1BinomialApproximateCondensed <- function(M, C, lambda) {
     .Call(`_l01segmentation_L1BinomialApproximateCondensed`, M, C, lambda)
 }
 
-gmm <- function(data, k, km_iter = 10L, em_iter = 5L, var_floor = 1e-10L, verbose = FALSE) {
-    .Call(`_l01segmentation_gmm`, data, k, km_iter, em_iter, var_floor, verbose)
-}
-
 blockcoordinatedescent <- function(Yhat, lambda, w, mintimer = 5, tol = 1e-6) {
     .Call(`_l01segmentation_blockcoordinatedescent`, Yhat, lambda, w, mintimer, tol)
 }

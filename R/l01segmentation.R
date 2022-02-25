@@ -5,32 +5,34 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
     if (!(objective %in% c("gaussian", "poisson", "exponential", "binomial"))){
         stop("objective should be either gaussian or poisson or exponential or binomial(for Gaussian, Poisson, exponential, binomial errors respectively).")
     }
-    if (!(format %in% c("compressed", "full"))){
-        stop("format should be either compressed or full.")
+    if (!(format %in% c("compressed", "full", "single"))){
+        stop("format should be either compressed or full or single.")
     }
-    if(is.null(N) && is.null(lambda2)){
-        stop("Either N or lambda2 should be given.")
-    }
-    if(is.null(lambda2) && l == 1){
-        stop("N is for segmentation not L1.")
-    }
-    if(!is.null(N)){
-        if(!is.integer(N)){
-            stop("N should be an integer.")
+    if( format != "single" ){
+        if(is.null(N) && is.null(lambda2)){
+            stop("Either N or lambda2 should be given.")
         }
-        if(N <= 0){
-            stop("N should be positive.")
+        if(is.null(lambda2) && l == 1){
+            stop("N is for segmentation not L1.")
         }
-    }
-    if(!is.null(lambda2)){
-        if (any(lambda2 <= 0)){
-            stop("lambda values should be positive.")
+        if(!is.null(N)){
+            if(!is.integer(N)){
+                stop("N should be an integer.")
+            }
+            if(N <= 0){
+                stop("N should be positive.")
+            }
         }
-        if (!(length(lambda2) %in% c(1, length(y)-1))){
-            stop("Wrong number of lambda values given.")
-        }
-        if (length(lambda2) == 1){
-            lambda2 = rep(1,length(y)-1) * lambda2
+        if(!is.null(lambda2)){
+            if (any(lambda2 <= 0)){
+                stop("lambda values should be positive.")
+            }
+            if (!(length(lambda2) %in% c(1, length(y)-1))){
+                stop("Wrong number of lambda values given.")
+            }
+            if (length(lambda2) == 1){
+                lambda2 = rep(1,length(y)-1) * lambda2
+            }
         }
     }
     if(!is.null(weight)){
@@ -99,8 +101,13 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
                     breakpoints$end = rev(breakpoints$end)
                     breakpoints$values = rev(breakpoints$values)
                 }
-            }
-            else{
+            } else if (format == "single"){
+                    singlepoint = L0PoissonBreakPoint(y, weight)
+                    breakpoints = list()
+                    breakpoints$start = c(0, singlepoint+1)
+                    breakpoints$end = c(singlepointi+1, length(y)) 
+                    breakpoints$values = c(mean(y[1:(singlepoint)]), mean(y[(singlepoint+1):length(y)]))
+            } else{
                 if(is.null(N)){
                     signal = L0PoissonApproximate(y, lambda2, weight)
                 }
@@ -192,10 +199,10 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
             }
         }
     }
-    if( format == "compressed"){
-        return(data.frame(start=breakpoints$start+1,end=breakpoints$end,value=breakpoints$values))
+    if( format == "full"){
+        return(signal)
     }
     else{
-        return(signal)
+        return(data.frame(start=breakpoints$start+1,end=breakpoints$end,value=breakpoints$values))
     }
 }
