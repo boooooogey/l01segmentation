@@ -79,13 +79,16 @@ bool PoissonError::max(double& xprime, double& yprime){
         else{
             return false;
         }
+        yprime = rangeinf;
     }
     else if (a == 0){
         if (b > 0){
             xprime = domaininf;
+            yprime = rangeinf;
         }
         else if (b < 0){
             xprime = domainninf;
+            yprime = c;
         }
         else{
             return false;
@@ -93,6 +96,7 @@ bool PoissonError::max(double& xprime, double& yprime){
     }
     else if (-a/b > 0){
         xprime = log(-a/b);
+        yprime = a * xprime + b * exp(xprime) + c;
     }
     else{
         if (b < 0  && a < 0){
@@ -101,8 +105,8 @@ bool PoissonError::max(double& xprime, double& yprime){
         else{
             xprime = domaininf;
         }
+        yprime = rangeinf;
     }
-    yprime = a * xprime + b * exp(xprime) + c;
     return true;
 }
 
@@ -139,8 +143,8 @@ void PoissonError::solve(const double& t, double& left, double& right, bool& lef
     else if(a == 0 && b != 0 && c != 0){
         left = right = log(c/b);
         //leftexists = rightexists = true;
-        leftexists = true;
-        rightexists = false;
+        leftexists = false; //true;
+        rightexists = true; //false;
     }
     else{
         left = right = 0;
