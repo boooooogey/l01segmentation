@@ -1,7 +1,7 @@
 # l01segmentation
 l01segmentation provides functions to segment an input signal (y) by solving a L0-fused approximation problem, given below: 
-
-![](https://latex.codecogs.com/svg.image?{\color{white}\beta=\underset{\beta&space;\in&space;\mathbb{R}^{n}}{\operatorname{argmax}}&space;\sum_{i=1}^{N}&space;e(\beta_i,&space;y_i\textbf{})-\lambda_2&space;\sum_{i=1}^{N-1}\left|\beta_{i}&space;-&space;\beta_{i&plus;1}\right|_0}#gh-dark-mode-only)
+![dark](https://user-images.githubusercontent.com/15932827/158258314-21560f85-d37c-4477-a453-0dc5d989ac17.svg#gh-dark-mode-only)
+![light](https://user-images.githubusercontent.com/15932827/158258342-d06edc11-11ba-4a73-aaba-9d9e279cee44.svg#gh-light-mode-only)
 
 Possible distributions that e can be derived from are:
 - Gaussian
