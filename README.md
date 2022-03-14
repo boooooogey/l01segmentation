@@ -1,5 +1,6 @@
 # l01segmentation
 l01segmentation provides functions to segment an input signal (y) by solving a L0-fused approximation problem, given below: 
+
 ![dark](https://user-images.githubusercontent.com/15932827/158258314-21560f85-d37c-4477-a453-0dc5d989ac17.svg#gh-dark-mode-only)
 ![light](https://user-images.githubusercontent.com/15932827/158258342-d06edc11-11ba-4a73-aaba-9d9e279cee44.svg#gh-light-mode-only)
 
