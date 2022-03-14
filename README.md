@@ -32,7 +32,7 @@ fusedsegmentation(y, lambda2, C, N, weight, l, objective, format)
 ```
 fusedsegmentation(data, lambda2 = 125, objective="poisson", format="full")
 ```
-**Output:**
+**Output (format = "compressed"):**
 ```
    start   end     value
 1      1  1174 1.0732538
