@@ -77,7 +77,7 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
         else{
             if (format == "compressed"){
                 breakpoints = L1GaussianApproximateCondensed(y,lambda2,weight)
-                breakpoints$start = c(1, breakpoints$ii + 1)
+                breakpoints$start = c(0, breakpoints$ii)
                 breakpoints$end = c(breakpoints$ii, length(y))
                 breakpoints$values = breakpoints$val
             }
