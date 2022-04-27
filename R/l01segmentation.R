@@ -117,7 +117,15 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
             }
         }
         else{
-            stop("Not implemented.")
+            if (format == "compressed"){
+                breakpoints = L1PoissonApproximateCondensed(y, weight, lambda2[1])
+                breakpoints$start = unique(c(0, rev(breakpoints$ii) + 1 ))
+                breakpoints$end = unique(c(rev(breakpoints$ii) + 1, length(y)))
+                breakpoints$values = exp(rev(breakpoints$val))
+            }
+            else{
+                signal = exp(L1PoissonApproximate(y, weight, lambda2[1]))
+            }
         }
     }
     else if(objective == "exponential"){

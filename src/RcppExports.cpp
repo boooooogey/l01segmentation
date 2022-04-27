@@ -308,6 +308,32 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// L1PoissonApproximate
+NumericVector L1PoissonApproximate(NumericVector y, NumericVector w, double lambda);
+RcppExport SEXP _l01segmentation_L1PoissonApproximate(SEXP ySEXP, SEXP wSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(L1PoissonApproximate(y, w, lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
+// L1PoissonApproximateCondensed
+List L1PoissonApproximateCondensed(NumericVector y, NumericVector w, double lambda);
+RcppExport SEXP _l01segmentation_L1PoissonApproximateCondensed(SEXP ySEXP, SEXP wSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(L1PoissonApproximateCondensed(y, w, lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
 // L1GaussianApproximate
 NumericVector L1GaussianApproximate(NumericVector y, NumericVector l2, Nullable<NumericVector> weights);
 RcppExport SEXP _l01segmentation_L1GaussianApproximate(SEXP ySEXP, SEXP l2SEXP, SEXP weightsSEXP) {
@@ -359,6 +385,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_l01segmentation_L0GaussianBreakPoint", (DL_FUNC) &_l01segmentation_L0GaussianBreakPoint, 2},
     {"_l01segmentation_L0ExponentialBreakPoint", (DL_FUNC) &_l01segmentation_L0ExponentialBreakPoint, 2},
     {"_l01segmentation_L0BinomialBreakPoint", (DL_FUNC) &_l01segmentation_L0BinomialBreakPoint, 2},
+    {"_l01segmentation_L1PoissonApproximate", (DL_FUNC) &_l01segmentation_L1PoissonApproximate, 3},
+    {"_l01segmentation_L1PoissonApproximateCondensed", (DL_FUNC) &_l01segmentation_L1PoissonApproximateCondensed, 3},
     {"_l01segmentation_L1GaussianApproximate", (DL_FUNC) &_l01segmentation_L1GaussianApproximate, 3},
     {"_l01segmentation_L1GaussianApproximateCondensed", (DL_FUNC) &_l01segmentation_L1GaussianApproximateCondensed, 3},
     {NULL, NULL, 0}

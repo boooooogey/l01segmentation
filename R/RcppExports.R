@@ -93,6 +93,14 @@ L0BinomialBreakPoint <- function(y, w) {
     .Call(`_l01segmentation_L0BinomialBreakPoint`, y, w)
 }
 
+L1PoissonApproximate <- function(y, w, lambda) {
+    .Call(`_l01segmentation_L1PoissonApproximate`, y, w, lambda)
+}
+
+L1PoissonApproximateCondensed <- function(y, w, lambda) {
+    .Call(`_l01segmentation_L1PoissonApproximateCondensed`, y, w, lambda)
+}
+
 L1GaussianApproximate <- function(y, l2, weights = NULL) {
     .Call(`_l01segmentation_L1GaussianApproximate`, y, l2, weights)
 }
