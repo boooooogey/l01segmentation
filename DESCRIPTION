@@ -1,6 +1,6 @@
 Package: l01segmentation
 Type: Package
-Title: What the Package Does in One 'Title Case' Line
+Title: Solves L0 segmentation and L1 approximator problems for various probability distributions
 Version: 1.0
 Date: 2021-01-24
 Author: Your Name
@@ -8,5 +8,14 @@ Maintainer: Your Name <your@email.com>
 Description: One paragraph description of what the package does as one
         or more full sentences.
 License: GPL (>= 2)
-Imports: Rcpp (>= 1.0.5)
-LinkingTo: RcppArmadillo, BH, Rcpp
+Imports: 
+    Rcpp (>= 1.0.5),
+    doParallel,
+    rtracklayer,
+    IRanges,
+    GenomicRanges,
+    GenomeInfoDb
+LinkingTo: 
+    RcppArmadillo, 
+    BH, 
+    Rcpp
