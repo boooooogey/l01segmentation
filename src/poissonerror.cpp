@@ -113,6 +113,7 @@ bool PoissonError::max(double& xprime, double& yprime){
 void PoissonError::solve(const double& t, double& left, double& right, bool& leftexists, bool& rightexists){
 
     double infmin = std::numeric_limits<double>::min();
+    double minf = std::numeric_limits<double>::min();
     using boost::math::lambert_w0;
     using boost::math::lambert_wm1;
     double a = this->a, b=this->b, c = t - this->c; 
@@ -120,8 +121,20 @@ void PoissonError::solve(const double& t, double& left, double& right, bool& lef
         double exin = b * exp(c/a) / a;
         if( -exp(-1) <= exin && exin <= 0 ){
             if (abs(exin) < infmin) exin = 0;
-            left = ( c - a * lambert_wm1(exin))/a;
-            right = ( c - a * lambert_w0(exin))/a;
+            if(exin != 0 && exin != -exp(-1)){
+                left = ( c - a * lambert_wm1(exin))/a;
+                right = ( c - a * lambert_w0(exin))/a;
+            }
+            else{
+                if(exin == 0){
+                    left = rangeinf;
+                    right = 0;
+                }
+                if(exin == -1){
+                    left = (c + a) / a;
+                    right = (c + a) / a;
+                }
+            }
             if(left > right){
                 double tmp = left;
                 left = right;

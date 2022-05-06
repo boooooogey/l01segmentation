@@ -1,4 +1,4 @@
-fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NULL, l = 0, objective = "gaussian", format = "compressed"){
+fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NULL, l = 0, objective = "poisson", format = "compressed"){
     if (!(l %in% c(1,0))){
         stop("l should be either 0 or 1(for L0, L1 penalties respectively).")
     }
@@ -56,13 +56,13 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
                     breakpoints = L0GaussianApproximateCondensed(y, lambda2, weight)
                     breakpoints$start = rev(breakpoints$start)
                     breakpoints$end = rev(breakpoints$end)
-                    breakpoints$values = rev(breakpoints$values)
+                    breakpoints$value = rev(breakpoints$value)
                 }
                 else{
                     breakpoints = L0GaussianApproximateNCondensed(y, N, weight)
                     breakpoints$start = rev(breakpoints$start)
                     breakpoints$end = rev(breakpoints$end)
-                    breakpoints$values = rev(breakpoints$values)
+                    breakpoints$value = rev(breakpoints$value)
                 }
             }
             else{
@@ -79,7 +79,7 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
                 breakpoints = L1GaussianApproximateCondensed(y,lambda2,weight)
                 breakpoints$start = c(0, breakpoints$ii)
                 breakpoints$end = c(breakpoints$ii, length(y))
-                breakpoints$values = breakpoints$val
+                breakpoints$value = breakpoints$val
             }
             else{
                 signal = L1GaussianApproximate(y,lambda2,weight)
@@ -93,20 +93,20 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
                     breakpoints = L0PoissonApproximateCondensed(y, lambda2, weight)
                     breakpoints$start = rev(breakpoints$start)
                     breakpoints$end = rev(breakpoints$end)
-                    breakpoints$values = rev(breakpoints$values)
+                    breakpoints$value = rev(breakpoints$value)
                 }
                 else{
                     breakpoints = L0PoissonApproximateNCondensed(y, N, weight)
                     breakpoints$start = rev(breakpoints$start)
                     breakpoints$end = rev(breakpoints$end)
-                    breakpoints$values = rev(breakpoints$values)
+                    breakpoints$value = rev(breakpoints$value)
                 }
             } else if (format == "single"){
                     singlepoint = L0PoissonBreakPoint(y, weight)
                     breakpoints = list()
                     breakpoints$start = c(0, singlepoint+1)
                     breakpoints$end = c(singlepointi+1, length(y)) 
-                    breakpoints$values = c(mean(y[1:(singlepoint)]), mean(y[(singlepoint+1):length(y)]))
+                    breakpoints$value = c(mean(y[1:(singlepoint)]), mean(y[(singlepoint+1):length(y)]))
             } else{
                 if(is.null(N)){
                     signal = L0PoissonApproximate(y, lambda2, weight)
@@ -121,7 +121,7 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
                 breakpoints = L1PoissonApproximateCondensed(y, weight, lambda2[1])
                 breakpoints$start = unique(c(0, rev(breakpoints$ii) + 1 ))
                 breakpoints$end = unique(c(rev(breakpoints$ii) + 1, length(y)))
-                breakpoints$values = exp(rev(breakpoints$val))
+                breakpoints$value = exp(rev(breakpoints$val))
             }
             else{
                 signal = exp(L1PoissonApproximate(y, weight, lambda2[1]))
@@ -135,13 +135,13 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
                     breakpoints = L0ExponentialApproximateCondensed(y, lambda2, weight)
                     breakpoints$start = rev(breakpoints$start)
                     breakpoints$end = rev(breakpoints$end)
-                    breakpoints$values = rev(breakpoints$values)
+                    breakpoints$value = rev(breakpoints$value)
                 }
                 else{
                     breakpoints = L0ExponentialApproximateNCondensed(y, N, weight)
                     breakpoints$start = rev(breakpoints$start)
                     breakpoints$end = rev(breakpoints$end)
-                    breakpoints$values = rev(breakpoints$values)
+                    breakpoints$value = rev(breakpoints$value)
                 }
             }
             else{
@@ -177,13 +177,13 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
                     breakpoints = L0BinomialApproximateCondensed(y, lambda2, weight)
                     breakpoints$start = rev(breakpoints$start)
                     breakpoints$end = rev(breakpoints$end)
-                    breakpoints$values = rev(breakpoints$values)
+                    breakpoints$value = rev(breakpoints$value)
                 }
                 else{
                     breakpoints = L0BinomialApproximateNCondensed(y, N, weight)
                     breakpoints$start = rev(breakpoints$start)
                     breakpoints$end = rev(breakpoints$end)
-                    breakpoints$values = rev(breakpoints$values)
+                    breakpoints$value = rev(breakpoints$value)
                 }
             }
             else{
@@ -200,7 +200,7 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
                 breakpoints = L1BinomialApproximateCondensed(y, C, lambda2[1])
                 breakpoints$start = unique(c(0, rev(breakpoints$ii) + 1 ))
                 breakpoints$end = unique(c(rev(breakpoints$ii) + 1, length(y)))
-                breakpoints$values = rev(breakpoints$val)
+                breakpoints$value = rev(breakpoints$val)
             }
             else{
                 signal = L1BinomialApproximate(y, C, lambda2[1])
@@ -211,6 +211,6 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
         return(signal)
     }
     else{
-        return(data.frame(start=breakpoints$start+1,end=breakpoints$end,value=breakpoints$values))
+        return(data.frame(start=breakpoints$start+1,end=breakpoints$end,value=breakpoints$value))
     }
 }

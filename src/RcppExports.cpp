@@ -334,6 +334,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// binVector
+List binVector(NumericVector y, int bin_size);
+RcppExport SEXP _l01segmentation_binVector(SEXP ySEXP, SEXP bin_sizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int >::type bin_size(bin_sizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(binVector(y, bin_size));
+    return rcpp_result_gen;
+END_RCPP
+}
 // L1GaussianApproximate
 NumericVector L1GaussianApproximate(NumericVector y, NumericVector l2, Nullable<NumericVector> weights);
 RcppExport SEXP _l01segmentation_L1GaussianApproximate(SEXP ySEXP, SEXP l2SEXP, SEXP weightsSEXP) {
@@ -387,6 +399,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_l01segmentation_L0BinomialBreakPoint", (DL_FUNC) &_l01segmentation_L0BinomialBreakPoint, 2},
     {"_l01segmentation_L1PoissonApproximate", (DL_FUNC) &_l01segmentation_L1PoissonApproximate, 3},
     {"_l01segmentation_L1PoissonApproximateCondensed", (DL_FUNC) &_l01segmentation_L1PoissonApproximateCondensed, 3},
+    {"_l01segmentation_binVector", (DL_FUNC) &_l01segmentation_binVector, 2},
     {"_l01segmentation_L1GaussianApproximate", (DL_FUNC) &_l01segmentation_L1GaussianApproximate, 3},
     {"_l01segmentation_L1GaussianApproximateCondensed", (DL_FUNC) &_l01segmentation_L1GaussianApproximateCondensed, 3},
     {NULL, NULL, 0}

@@ -101,6 +101,10 @@ L1PoissonApproximateCondensed <- function(y, w, lambda) {
     .Call(`_l01segmentation_L1PoissonApproximateCondensed`, y, w, lambda)
 }
 
+binVector <- function(y, bin_size) {
+    .Call(`_l01segmentation_binVector`, y, bin_size)
+}
+
 L1GaussianApproximate <- function(y, l2, weights = NULL) {
     .Call(`_l01segmentation_L1GaussianApproximate`, y, l2, weights)
 }

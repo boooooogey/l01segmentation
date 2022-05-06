@@ -51,7 +51,7 @@ List L0PoissonApproximateCondensed(NumericVector y, NumericVector l, NumericVect
     IntegerVector start = IntegerVector(n);
     IntegerVector end = IntegerVector(n);
     approximate<PoissonError>(n, y.begin(), l.begin(), w.begin(), k, start.begin(), end.begin(), val.begin());
-    return List::create(Named("values") = val[Rcpp::Range(0, k-1)] , Named("start") = start[Rcpp::Range(0, k-1)], Named("end") = end[Rcpp::Range(0, k-1)]);
+    return List::create(Named("value") = val[Rcpp::Range(0, k-1)] , Named("start") = start[Rcpp::Range(0, k-1)], Named("end") = end[Rcpp::Range(0, k-1)]);
 }
 
 //[[Rcpp::export]]
@@ -62,7 +62,7 @@ List L0GaussianApproximateCondensed(NumericVector y, NumericVector l, NumericVec
     IntegerVector start = IntegerVector(n);
     IntegerVector end = IntegerVector(n);
     approximate<SquaredError>(n, y.begin(), l.begin(), w.begin(), k, start.begin(), end.begin(), val.begin());
-    return List::create(Named("values") = val[Rcpp::Range(0, k-1)] , Named("start") = start[Rcpp::Range(0, k-1)], Named("end") = end[Rcpp::Range(0, k-1)]);
+    return List::create(Named("value") = val[Rcpp::Range(0, k-1)] , Named("start") = start[Rcpp::Range(0, k-1)], Named("end") = end[Rcpp::Range(0, k-1)]);
 }
 
 //[[Rcpp::export]]
@@ -73,7 +73,7 @@ List L0ExponentialApproximateCondensed(NumericVector y, NumericVector l, Numeric
     IntegerVector start = IntegerVector(n);
     IntegerVector end = IntegerVector(n);
     approximate<ExponentialError>(n, y.begin(), l.begin(), w.begin(), k, start.begin(), end.begin(), val.begin());
-    return List::create(Named("values") = val[Rcpp::Range(0, k-1)] , Named("start") = start[Rcpp::Range(0, k-1)], Named("end") = end[Rcpp::Range(0, k-1)]);
+    return List::create(Named("value") = val[Rcpp::Range(0, k-1)] , Named("start") = start[Rcpp::Range(0, k-1)], Named("end") = end[Rcpp::Range(0, k-1)]);
 }
 
 //[[Rcpp::export]]
@@ -84,7 +84,7 @@ List L0BinomialApproximateCondensed(NumericVector y, NumericVector l, NumericVec
     IntegerVector start = IntegerVector(n);
     IntegerVector end = IntegerVector(n);
     approximate<BinomialError>(n, y.begin(), l.begin(), w.begin(), k, start.begin(), end.begin(), val.begin());
-    return List::create(Named("values") = val[Rcpp::Range(0, k-1)] , Named("start") = start[Rcpp::Range(0, k-1)], Named("end") = end[Rcpp::Range(0, k-1)]);
+    return List::create(Named("value") = val[Rcpp::Range(0, k-1)] , Named("start") = start[Rcpp::Range(0, k-1)], Named("end") = end[Rcpp::Range(0, k-1)]);
 }
 
 //[[Rcpp::export]]
@@ -126,7 +126,7 @@ List L0PoissonApproximateNCondensed(NumericVector y, int N, NumericVector w){
     IntegerVector start = IntegerVector(N);
     IntegerVector end = IntegerVector(N);
     approximate<PoissonError>(n, y.begin(), N, w.begin(), start.begin(), end.begin(), val.begin());
-    return List::create(Named("values") = val , Named("start") = start, Named("end") = end);
+    return List::create(Named("value") = val , Named("start") = start, Named("end") = end);
 }
 
 //[[Rcpp::export]]
@@ -136,7 +136,7 @@ List L0GaussianApproximateNCondensed(NumericVector y, int N, NumericVector w){
     IntegerVector start = IntegerVector(N);
     IntegerVector end = IntegerVector(N);
     approximate<SquaredError>(n, y.begin(), N, w.begin(), start.begin(), end.begin(), val.begin());
-    return List::create(Named("values") = val , Named("start") = start, Named("end") = end);
+    return List::create(Named("value") = val , Named("start") = start, Named("end") = end);
 }
 
 //[[Rcpp::export]]
@@ -146,7 +146,7 @@ List L0ExponentialApproximateNCondensed(NumericVector y, int N, NumericVector w)
     IntegerVector start = IntegerVector(N);
     IntegerVector end = IntegerVector(N);
     approximate<ExponentialError>(n, y.begin(), N, w.begin(), start.begin(), end.begin(), val.begin());
-    return List::create(Named("values") = val , Named("start") = start, Named("end") = end);
+    return List::create(Named("value") = val , Named("start") = start, Named("end") = end);
 }
 
 //[[Rcpp::export]]
@@ -156,7 +156,7 @@ List L0BinomialApproximateNCondensed(NumericVector y, int N, NumericVector w){
     IntegerVector start = IntegerVector(N);
     IntegerVector end = IntegerVector(N);
     approximate<BinomialError>(n, y.begin(), N, w.begin(), start.begin(), end.begin(), val.begin());
-    return List::create(Named("values") = val , Named("start") = start, Named("end") = end);
+    return List::create(Named("value") = val , Named("start") = start, Named("end") = end);
 }
 
 //[[Rcpp::export]]
