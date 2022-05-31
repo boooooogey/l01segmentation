@@ -12,27 +12,27 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // L1BinomialApproximate
-NumericVector L1BinomialApproximate(NumericVector M, NumericVector C, double lambda);
+NumericVector L1BinomialApproximate(NumericVector M, NumericVector C, NumericVector lambda);
 RcppExport SEXP _l01segmentation_L1BinomialApproximate(SEXP MSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type M(MSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type C(CSEXP);
-    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
     rcpp_result_gen = Rcpp::wrap(L1BinomialApproximate(M, C, lambda));
     return rcpp_result_gen;
 END_RCPP
 }
 // L1BinomialApproximateCondensed
-List L1BinomialApproximateCondensed(NumericVector M, NumericVector C, double lambda);
+List L1BinomialApproximateCondensed(NumericVector M, NumericVector C, NumericVector lambda);
 RcppExport SEXP _l01segmentation_L1BinomialApproximateCondensed(SEXP MSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type M(MSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type C(CSEXP);
-    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
     rcpp_result_gen = Rcpp::wrap(L1BinomialApproximateCondensed(M, C, lambda));
     return rcpp_result_gen;
 END_RCPP

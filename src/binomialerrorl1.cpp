@@ -90,15 +90,15 @@ int backtraceCondensed( const double * tm, const double * tp, double * val, int 
     return N;
 }
 
-void CoreLoop(const double * M, const double * C, const int & n, const double & lambda, double * tm, double * tp, double & sol){
+void CoreLoop(const double * M, const double * C, const int & n, const double * lambda, double * tm, double * tp, double & sol){
 
     double * x = new double[2 * n];
     double * a = new double[2 * n];
     double * b = new double[2 * n];
     double * c = new double[2 * n];
 
-    root( M[0], C[0] - M[0], 0, -lambda, tm[0] );
-    root( M[0], C[0] - M[0], 0, lambda, tp[0] );
+    root( M[0], C[0] - M[0], 0, -lambda[0], tm[0] );
+    root( M[0], C[0] - M[0], 0, lambda[0], tp[0] );
 
     int l = n - 1;
     int r = n;
@@ -110,19 +110,19 @@ void CoreLoop(const double * M, const double * C, const int & n, const double & 
 
     a[l] = M[0];
     b[l] = C[0] - M[0];
-    c[l] = lambda;
+    c[l] = lambda[0];
 
     a[r] = -M[0];
     b[r] = -C[0] + M[0];
-    c[r] = lambda;
+    c[r] = lambda[0];
 
     double afirst = M[1];
     double bfirst = C[1] - M[1];
-    double cfirst = -lambda;
+    double cfirst = -lambda[0];
 
     double alast = -M[1];
     double blast = -C[1] + M[1];
-    double clast = -lambda;
+    double clast = -lambda[0];
 
     double alo, blo, clo, ahi, bhi, chi;
     int lo, hi;
@@ -134,13 +134,13 @@ void CoreLoop(const double * M, const double * C, const int & n, const double & 
         lo = l;
         for(int i = 0; i < r - l + 1; i++){
             derivative( alo, blo, clo, x[lo], deriv );
-            if( deriv > -lambda ) break;
+            if( deriv > -lambda[k] ) break;
             alo += a[lo];
             blo += b[lo];
             clo += c[lo];
             lo++;
         }
-        root( alo, blo, clo, -lambda, tm[k] );
+        root( alo, blo, clo, -lambda[k], tm[k] );
 
         ahi = alast;
         bhi = blast;
@@ -148,13 +148,13 @@ void CoreLoop(const double * M, const double * C, const int & n, const double & 
         hi = r;
         for(int i = 0; i < r - l + 1; i++){
             derivative( -ahi, -bhi, -chi, x[hi], deriv );
-            if( deriv < lambda ) break;
+            if( deriv < lambda[k] ) break;
             ahi += a[hi];
             bhi += b[hi];
             chi += c[hi];
             hi--;
         }
-        root( -ahi, -bhi, -chi, lambda, tp[k] );
+        root( -ahi, -bhi, -chi, lambda[k], tp[k] );
 
         l = lo - 1;
         r = hi + 1;
@@ -164,20 +164,20 @@ void CoreLoop(const double * M, const double * C, const int & n, const double & 
         x[l] = tm[k];
         a[l] = alo;
         b[l] = blo;
-        c[l] = clo + lambda;
+        c[l] = clo + lambda[k];
 
         x[r] = tp[k];
         a[r] = ahi;
         b[r] = bhi;
-        c[r] = chi + lambda;
+        c[r] = chi + lambda[k];
 
         afirst = M[k+1];
         bfirst = C[k+1] - M[k+1];
-        cfirst = -lambda;
+        cfirst = -lambda[k];
 
         alast = -M[k+1];
         blast = -C[k+1] + M[k+1];
-        clast = -lambda;
+        clast = -lambda[k];
     }
     alo = afirst;
     blo = bfirst;
@@ -200,24 +200,24 @@ void CoreLoop(const double * M, const double * C, const int & n, const double & 
 }
 
 //[[Rcpp::export]]
-NumericVector L1BinomialApproximate(NumericVector M, NumericVector C, double lambda){
+NumericVector L1BinomialApproximate(NumericVector M, NumericVector C, NumericVector lambda){
     int n = M.size();
     NumericVector x = NumericVector(n);
     NumericVector tm = NumericVector(n-1);
     NumericVector tp = NumericVector(n-1);
-    CoreLoop(M.begin(), C.begin(), n, lambda, tm.begin(), tp.begin(), x[n-1]);
+    CoreLoop(M.begin(), C.begin(), n, lambda.begin(), tm.begin(), tp.begin(), x[n-1]);
     backtrace( tm.begin(), tp.begin(), x.begin(), n );
     return x;
 }
 
 //[[Rcpp::export]]
-List L1BinomialApproximateCondensed(NumericVector M, NumericVector C, double lambda){
+List L1BinomialApproximateCondensed(NumericVector M, NumericVector C, NumericVector lambda){
     int n = M.size();
     NumericVector val = NumericVector(n);
     IntegerVector ii = IntegerVector(n);
     NumericVector tm = NumericVector(n-1);
     NumericVector tp = NumericVector(n-1);
-    CoreLoop(M.begin(), C.begin(), n, lambda, tm.begin(), tp.begin(), val[0]);
+    CoreLoop(M.begin(), C.begin(), n, lambda.begin(), tm.begin(), tp.begin(), val[0]);
     int k = backtraceCondensed( tm.begin(), tp.begin(), val.begin(), ii.begin(), n );
     return List::create( Named("val") = NumericVector( val.begin(), val.begin() + k ), Named("ii") = IntegerVector( ii.begin(), ii.begin() + k - 1 ) );
 }

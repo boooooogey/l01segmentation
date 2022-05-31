@@ -158,9 +158,6 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
         }
     }
     else if(objective == "binomial"){
-        if( !is.integer(y) || !is.integer(C) ){
-            stop("y (methylation) and C (coverage) should be integers.")
-        }
         if( any( y > C ) ){
             stop("y (methylation) cannot be greater than C (coverage).")
         }
@@ -197,13 +194,13 @@ fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NU
         }
         else{
             if (format == "compressed"){
-                breakpoints = L1BinomialApproximateCondensed(y, C, lambda2[1])
+                breakpoints = L1BinomialApproximateCondensed(y, C, lambda2)
                 breakpoints$start = unique(c(0, rev(breakpoints$ii) + 1 ))
                 breakpoints$end = unique(c(rev(breakpoints$ii) + 1, length(y)))
                 breakpoints$value = rev(breakpoints$val)
             }
             else{
-                signal = L1BinomialApproximate(y, C, lambda2[1])
+                signal = L1BinomialApproximate(y, C, lambda2)
             }
         }
     }
