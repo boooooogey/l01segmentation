@@ -4,10 +4,10 @@ plotsegments <- function(segments,data=NULL,label=NULL,title="",ylab="",xlab="",
     }
     if(!is.null(data)){
         if (is.null(label)){
-            plot(data,ylab = ylab,xlab = xlab,main = title)
+            plot(data,ylab = ylab,xlab = xlab,main = title, col = rgb(0,0,0,alpha = 0.5),pch=19)
         }
         else{
-            plot(data,col=label+2,ylab = ylab,xlab = xlab,main = title)
+            plot(data,col=label+2,ylab = ylab,xlab = xlab,main = title, col = rgb(0,0,0,alpha = 0.5),pch=19)
         }
     }
     else{
@@ -19,14 +19,14 @@ plotsegments <- function(segments,data=NULL,label=NULL,title="",ylab="",xlab="",
             e = segments[,2][i]
             v = segments[,3][i]
             if(s != e){
-                lines(c(s,e), c(v,v),col=2)
-                points(c(s,e),c(v,v),col=2,pch=6)
+                lines(c(s,e), c(v,v),col=rgb(1,0,0,alpha = 1),lwd = 3)
+                points(c(s,e),c(v,v),col=rgb(1,0,0,alpha = 1),pch=18, cex = 1)
             }
             else{
-                points(s,v,col=2,pch=6)
+                points(s,v,col=2,pch=18, cex = 1)
             }
             if( i < dim(segments)[1]){
-                lines(c(e,segments[,1][i+1]),c(v,segments[,3][i+1]) ,col=2)
+                lines(c(e,segments[,1][i+1]),c(v,segments[,3][i+1]) ,col=rgb(1,0,0,alpha = 1),lwd = 3)
             }
         }
     }
