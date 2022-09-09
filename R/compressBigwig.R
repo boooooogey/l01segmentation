@@ -12,6 +12,16 @@ wtab <- function(conn, d) {
   conn
 }
   
+#' @title compressBigwig
+#' @description
+#' Compresses the signal stored in the given BigWig file solving a L0 segmentation problem and stores the output into the given BedGraph file. 
+#' @param in_bigwig_path Path to the BigWig file to be compressed.
+#' @param out_bedgraph_path Path to the BedGraph file. The result of the partition will be saved in this file. 
+#' @param partition_length The number of loci to be read into the memory from the BigWig file. The default is 1e6.
+#' @param n_cores The number of cores to be used in the segmentation. The default is 4.
+#' @param bin Size of the data bins. If it has a value other than NULL, the data is binned before segmentation.
+#' @param ... To pass parameters to the L0 segmentation backend. For example, lambda2.
+#'
 compressBigwig <- function(in_bigwig_path, out_bedgraph_path, partition_length = 1e6, n_cores = 4, bin = NULL, ...){
   
   if(file.exists(out_bedgraph_path)){
@@ -67,6 +77,15 @@ compressBigwig <- function(in_bigwig_path, out_bedgraph_path, partition_length =
   on.exit(close(conn))
 }
 
+#' @title compressBigwigbyBinning
+#' @description
+#' Bins the signal stored in the given BigWig file and stores the output into the given BedGraph file. 
+#' @param in_bigwig_path Path to the BigWig file to be compressed.
+#' @param out_bedgraph_path Path to the BedGraph file. The binned data will be saved in this file. 
+#' @param partition_length The number of loci to be read into the memory from the BigWig file. The default is 1e6.
+#' @param n_cores The number of cores to be used in the segmentation. The default is 4.
+#' @param bin Size of the data bins. 
+#'
 compressBigwigbyBinning <- function(in_bigwig_path, out_bedgraph_path, bin_size, partition_length = 1e6, n_cores = 4){
   
   if(file.exists(out_bedgraph_path)){

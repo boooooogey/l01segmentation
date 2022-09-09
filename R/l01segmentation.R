@@ -1,3 +1,15 @@
+#' @title fusedsegmentation
+#' @description
+#' Segments a signal by solving L0 or L1 problems for various distributions. 
+#' 
+#' @param y The input signal.
+#' @param lambda2 The hyperparameter that gauges the strength of the segmentation. Higher values correspond to fewer larger segments.
+#' @param N The number of segments. Instead of lambda2, the number of segments can be specified. Computing the optimal segmentation for a specific number of segments is much slower than computing a segmentation for a given lambda.
+#' @param weight Weights for error functions for each locus. A higher weight enforces the output value to be closer to the input value for the specific locus. The default is 1.
+#' @param l Determine whether to solve L0 or L1 segmentation. Default is 0.
+#' @param objective The probability distribution to be used for the segmentation. Options are "poisson", "gaussian", "exponential", "binomial". The default is "poisson".
+#' @param format Data format for the output. For "compressed" (default), it outputs a Data.Frame with three columns. The first two columns are start and end indeces of the segments and the third column is the signal value computed for the segment. For "signal", it returns a vector of the size of input with segmented values.
+#' @param C The coverage vector. This parameter is only relevant for the binomial distribution. In this case, y is the count vector for methylated reads.
 fusedsegmentation <- function(y, lambda2 = NULL, C = NULL, N = NULL, weight = NULL, l = 0, objective = "poisson", format = "compressed"){
     if (!(l %in% c(1,0))){
         stop("l should be either 0 or 1(for L0, L1 penalties respectively).")

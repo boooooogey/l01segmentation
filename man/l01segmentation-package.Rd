@@ -3,7 +3,7 @@
 \alias{l01segmentation}
 \docType{package}
 \title{
-  A short title line describing what the package does
+  Solves L0 segmentation and L1 approximator problems for various probability distributions
 }
 \description{
   A more detailed description of what the package does. A length
@@ -16,7 +16,7 @@
 \author{
 Your Name, email optional.
 
-Maintainer: Your Name <your@email.com>
+Maintainer: Ali Tugrul Balci <alitugrulbalci@gmail.com>
 }
 \references{
   This optional section can contain literature or other references for

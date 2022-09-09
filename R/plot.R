@@ -1,3 +1,11 @@
+#' @title plotsegments
+#' @description
+#' Plots the segmentation over the data.
+#' @param segments The segmentation outputed by fusedsegmentation (format = "compressed").
+#' @param data The original signal vector. If NULL, only the segmentation is plotted.
+#' @param label Labels for each location. The data points are colored by this vector.
+#' @param ylab Y-axis label.
+#' @param xlab X-axis label.
 plotsegments <- function(segments,data=NULL,label=NULL,title="",ylab="",xlab="",show="fused"){
     if(!(show %in% c("fused","breakpoints"))){
         stop("Unknown data type (Options: \"fused\" - \"breakpoints\").")
