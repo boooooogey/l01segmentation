@@ -31,5 +31,5 @@ List binVector(NumericVector y, int bin_size){
     if(counter != bin_size){
         binned[binned_index] = aggre / (bin_size - counter);
     }
-    return List::create(Named("values") = binned, Named("start") = start, Named("end") = end);
+    return List::create(Named("value") = binned, Named("start") = start, Named("end") = end);
 } 
