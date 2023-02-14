@@ -55,7 +55,7 @@ compressMethylation <- function(infile, outfile, distance_threshold, lambda){
       if (i == 1){
         start = 1
       }else{
-        start = end+1
+        start = end + 1
       }
       end = gaps[i]
       tmp_rowranges = start(rowranges_chrom[start:end])
@@ -64,5 +64,12 @@ compressMethylation <- function(infile, outfile, distance_threshold, lambda){
       segments = binomialsegmentation(data$meth[1:n], data$cov[1:n], tmp_rowranges, chrom, lambda)
       write_segmented_methylation(segments, outfile)
     }
+    start = end + 1
+    end = length(rowranges_chrom)
+    tmp_rowranges = start(rowranges_chrom[start:end])
+    n = length(tmp_rowranges)
+    data = get_cov_meth(methfile, chrom, tmp_rowranges[1], tmp_rowranges[length(tmp_rowranges)])
+    segments = binomialsegmentation(data$meth[1:n], data$cov[1:n], tmp_rowranges, chrom, lambda)
+    write_segmented_methylation(segments, outfile)
   }
 }
