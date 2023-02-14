@@ -28,6 +28,26 @@ fusedsegmentation(y, lambda2, C, N, weight, l, objective, format)
 - **objective:** options are "gauss", "poisson", "binomial", "exponential".
 - **format:** options are "full", "compressed". For "full", the function returns a vector of the same length as the input. For "compressed", the function returns a list of segment start-ends and the values.
 
+There are also two end-to-end pipeline for reading from a BigWig file, segmenting the signal, and storing the compressed signal in a BedGraph file.
+
+compressBigwig compresses a signal by both binning and using the L0 solver.  
+```
+compressBigwig(BigWig, BedGraph, bin, lambda2)
+```
+- **BigWig:** path to the BigWig file.
+- **BedGraph:** path to the BedGraph file in which the output will be stored.
+- **bin:** bin size of the initial binning.
+- **lambda2:** hyperparameter value for L0 solver.
+
+compressBigwig compresses a signal by binning.
+```
+compressBigwigbyBinning(BigWig, BedGraph, bin)
+```
+
+- **BigWig:** path to the BigWig file.
+- **BedGraph:** path to the BedGraph file in which the output will be stored.
+- **bin:** bin size.
+
 ## Example
 **Code:**
 ```
@@ -53,4 +73,12 @@ fusedsegmentation(data, lambda2 = 125, objective="poisson", format="full")
 ```
 **Figure:**
 ![github1](https://user-images.githubusercontent.com/15932827/158254225-143b22b7-c427-4808-bfca-d9fefd545d6e.png)
+
+**Code:**
+```
+compressBigwig("pol2.bw", "pol2_100.bedGraph", lambda2 = 100, bin = 20)
+compressBigwigbyBinning("pol2.bw", "pol2_bin.bedGraph", bin = 10000)
+```
+**Figure:**
+![github_igv](https://user-images.githubusercontent.com/15932827/189454800-ea22ac5f-8e0c-442c-bed0-81349c8b496d.png)
 
