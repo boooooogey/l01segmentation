@@ -2,14 +2,14 @@ read_meth_file <- function(file, workers = 8){
   BPPARAM = MulticoreParam(progressbar = TRUE, workers = workers)
   tmp = tempfile()
   
-  methfile = read.bismark(files = file,
-                          colData = data.frame(row.names="1"),
-                          rmZeroCov = T,
-                          verbose = T,
-                          BPPARAM = BPPARAM,
-                          BACKEND = "HDF5Array",
-                          dir = tmp,
-                          nThread=1)
+  read.bismark(files = file,
+               colData = data.frame(row.names="1"),
+               rmZeroCov = T,
+               verbose = T,
+               BPPARAM = BPPARAM,
+               BACKEND = "HDF5Array",
+               dir = tmp,
+               nThread=1)
 }
 
 write_segmented_methylation <- function(segments, file){

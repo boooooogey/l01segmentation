@@ -52,6 +52,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// combine_two_bp_sets_
+std::set<int> combine_two_bp_sets_(IntegerVector x, IntegerVector y);
+RcppExport SEXP _l01segmentation_combine_two_bp_sets_(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(combine_two_bp_sets_(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
 // L0PoissonApproximate
 NumericVector L0PoissonApproximate(NumericVector y, NumericVector l, NumericVector w);
 RcppExport SEXP _l01segmentation_L0PoissonApproximate(SEXP ySEXP, SEXP lSEXP, SEXP wSEXP) {
@@ -377,6 +389,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_l01segmentation_L1BinomialApproximate", (DL_FUNC) &_l01segmentation_L1BinomialApproximate, 3},
     {"_l01segmentation_L1BinomialApproximateCondensed", (DL_FUNC) &_l01segmentation_L1BinomialApproximateCondensed, 3},
     {"_l01segmentation_blockcoordinatedescent", (DL_FUNC) &_l01segmentation_blockcoordinatedescent, 5},
+    {"_l01segmentation_combine_two_bp_sets_", (DL_FUNC) &_l01segmentation_combine_two_bp_sets_, 2},
     {"_l01segmentation_L0PoissonApproximate", (DL_FUNC) &_l01segmentation_L0PoissonApproximate, 3},
     {"_l01segmentation_L0GaussianApproximate", (DL_FUNC) &_l01segmentation_L0GaussianApproximate, 3},
     {"_l01segmentation_L0ExponentialApproximate", (DL_FUNC) &_l01segmentation_L0ExponentialApproximate, 3},

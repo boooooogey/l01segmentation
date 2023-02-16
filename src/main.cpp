@@ -7,10 +7,27 @@
 #include "range.hpp"
 #include "util.hpp"
 #include <Rcpp.h>
+#include <set>
 #include <vector>
 //#include "gperftools/profiler.h"
 
 using namespace Rcpp;
+
+void add_to_lookup(std::set<int>& lookup, IntegerVector x) {
+  int n = x.size();
+  for (int i = 0; i < n; i++) {
+    lookup.insert(x[i]);
+  }
+}
+
+// [[Rcpp::export]]
+std::set<int> combine_two_bp_sets_(IntegerVector x, IntegerVector y) {
+
+  std::set<int> lookup;
+  add_to_lookup(lookup, x);
+  add_to_lookup(lookup, y);
+  return lookup;
+}
 
 //// [[Rcpp::export]]
 //SEXP start_profiler(SEXP str) {
