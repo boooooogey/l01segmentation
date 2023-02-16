@@ -1,7 +1,19 @@
-read_meth_file <- function(file, workers = 8){
+read_meth_file <- function(file, workers = 8, hdf5 = NULL){
   BPPARAM = BiocParallel::MulticoreParam(progressbar = TRUE, workers = workers)
   tmp = tempfile()
   
+  if(is.null(hdf5)){
+    tmp = tempfile()
+  }else{
+    tmp = hdf5
+    if(file.exists(file.path(hdf5, "se.rds"))){
+      if(normalizePath(hdf5) != normalizePath(".")){
+        createLink(target=file.path(hdf5, "assays.h5"), link="assays.h5")
+      }
+      return(readRDS(file.path(hdf5, "se.rds")))
+    }
+  }
+
   methfile = read.bismark(files = file,
                           colData = data.frame(row.names=format(1:length(file))),
                           rmZeroCov = T,
@@ -50,7 +62,9 @@ format_segments <- function(ranges, chrom_end_points, breakpoints){
 
   segments_chrom_splits = cumsum(Rle(as.factor(segments$chrom))@lengths)[1:(length(chrom_end_points) - 1)] +1
   
-  segments[segments_chrom_splits, 2] = start(ranges)[chrom_end_points[1:(length(chrom_end_points) - 1)]+1] 
+  if(length(chrom_end_points) > 1){
+      segments[segments_chrom_splits, 2] = start(ranges)[chrom_end_points[1:(length(chrom_end_points) - 1)]+1] 
+  }
   
   segments
 }
@@ -61,7 +75,7 @@ aggregate_meth_data <- function(data, segments, meth_colnames, type){
   cbind(segments, out)
 }
 
-compressMethylationMulti <- function(infiles, outfile, clusters, distance_threshold, lambda){
+compressMethylationMulti <- function(infiles, outfile, clusters, distance_threshold, lambda, region = NULL, hdf5 = NULL){
   meth_file = paste0(outfile, ".M.bedGraph")
   cov_file = paste0(outfile, ".cov.bedGraph")
   if(file.exists(meth_file)){
@@ -71,21 +85,33 @@ compressMethylationMulti <- function(infiles, outfile, clusters, distance_thresh
     unlink(cov_file)
   }
   
-  methdata = read_meth_file(infiles)
-  gap_distances = diff(start(rowRanges(methdata)))
+  methdata = read_meth_file(infiles, hdf5 = hdf5)
+
+  if(!is.null(region)){
+    region_ii = queryHits(findOverlaps(methdata@rowRanges, makeGRangesFromDataFrame(region), type="within"))
+    methdata = methdata[region_ii]
+  }
+
+  gap_distances = diff(start(methdata@rowRanges))
   gaps = which(distance_threshold < gap_distances)
   
-  chrom_splits = cumsum(seqnames(rowRanges(methdata))@lengths)
+  chrom_splits = cumsum(seqnames(methdata@rowRanges)@lengths)
   row_partitions = combine_two_bp_sets(gaps, chrom_splits)
   
   ii = order(clusters)
   clusters = clusters[ii]
   col_partitions = c(which(clusters[2:length(clusters)] != clusters[1:(length(clusters) - 1)]), length(clusters))
+
   breakpoints = segment_block_reduce(methdata, row_partitions, col_partitions, lambda)
   breakpoints = combine_two_bp_sets(row_partitions, breakpoints)
-  segments = format_segments(rowRanges(methdata), chrom_splits, breakpoints)
+  segments = format_segments(methdata@rowRanges, chrom_splits, breakpoints)
   meth_out = aggregate_meth_data(methdata, segments, infiles, "M") 
   cov_out = aggregate_meth_data(methdata, segments, infiles, "Cov") 
+
   write_segmented_methylation(meth_out, meth_file, col.names=T)
   write_segmented_methylation(cov_out, cov_file, col.names=T)
+
+  if(normalizePath(hdf5) != normalizePath(".")){
+    unlink("assays.h5")
+  }
 }
