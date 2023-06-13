@@ -1,17 +1,10 @@
 read_meth_file <- function(file, workers = 8, hdf5 = NULL){
   BPPARAM = BiocParallel::MulticoreParam(progressbar = TRUE, workers = workers)
-  tmp = tempfile()
   
   if(is.null(hdf5)){
-    tmp = tempfile()
-  }else{
-    tmp = hdf5
-    if(file.exists(file.path(hdf5, "se.rds"))){
-      if(normalizePath(hdf5) != normalizePath(".")){
-        createLink(target=file.path(hdf5, "assays.h5"), link="assays.h5")
-      }
-      return(readRDS(file.path(hdf5, "se.rds")))
-    }
+    hdf5 = tempfile()
+  }else if(file.exists(hdf5)){
+    return(HDF5Array::loadHDF5SummarizedExperiment(dir=hdf5))
   }
 
   methfile = read.bismark(files = file,
@@ -20,7 +13,7 @@ read_meth_file <- function(file, workers = 8, hdf5 = NULL){
                           verbose = T,
                           BPPARAM = BPPARAM,
                           BACKEND = "HDF5Array",
-                          dir = tmp,
+                          dir = hdf5,
                           nThread=1)
   methfile
 }
@@ -75,7 +68,7 @@ aggregate_meth_data <- function(data, segments, meth_colnames, type){
   cbind(segments, out)
 }
 
-compressMethylationMulti <- function(infiles, outfile, clusters, distance_threshold, lambda, region = NULL, hdf5 = NULL){
+compressMethylationMulti <- function(infiles, outfile, clusters, distance_threshold, lambda, col_names = NULL, region = NULL, hdf5 = NULL){
   meth_file = paste0(outfile, ".M.bedGraph")
   cov_file = paste0(outfile, ".cov.bedGraph")
   if(file.exists(meth_file)){
@@ -105,13 +98,14 @@ compressMethylationMulti <- function(infiles, outfile, clusters, distance_thresh
   breakpoints = segment_block_reduce(methdata, row_partitions, col_partitions, lambda)
   breakpoints = combine_two_bp_sets(row_partitions, breakpoints)
   segments = format_segments(methdata@rowRanges, chrom_splits, breakpoints)
+
+  if(!is.null(col_names)){
+      infiles = col_names
+  }
+
   meth_out = aggregate_meth_data(methdata, segments, infiles, "M") 
   cov_out = aggregate_meth_data(methdata, segments, infiles, "Cov") 
 
   write_segmented_methylation(meth_out, meth_file, col.names=T)
   write_segmented_methylation(cov_out, cov_file, col.names=T)
-
-  if(normalizePath(hdf5) != normalizePath(".")){
-    unlink("assays.h5")
-  }
 }
