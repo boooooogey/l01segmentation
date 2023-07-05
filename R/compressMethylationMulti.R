@@ -1,4 +1,4 @@
-read_meth_file <- function(file, workers = 8, hdf5 = NULL){
+read_meth_file <- function(file, workers = 8, hdf5 = NULL, colnames=NULL){
   BPPARAM = BiocParallel::MulticoreParam(progressbar = TRUE, workers = workers)
   
   if(is.null(hdf5)){
@@ -7,8 +7,15 @@ read_meth_file <- function(file, workers = 8, hdf5 = NULL){
     return(HDF5Array::loadHDF5SummarizedExperiment(dir=hdf5))
   }
 
+  if(is.null(colnames)){
+      colnames = data.frame(row.names=format(1:length(file)))
+  }
+  else{
+      colnames = data.frame(row.names=colnames)
+  }
+
   methfile = read.bismark(files = file,
-                          colData = data.frame(row.names=format(1:length(file))),
+                          colData = colnames,
                           rmZeroCov = T,
                           verbose = T,
                           BPPARAM = BPPARAM,
@@ -78,7 +85,7 @@ compressMethylationMulti <- function(infiles, outfile, clusters, distance_thresh
     unlink(cov_file)
   }
   
-  methdata = read_meth_file(infiles, hdf5 = hdf5)
+  methdata = read_meth_file(infiles, hdf5 = hdf5, col_names = col_names)
 
   if(!is.null(region)){
     region_ii = queryHits(findOverlaps(methdata@rowRanges, makeGRangesFromDataFrame(region), type="within"))
