@@ -85,7 +85,7 @@ compressMethylationMulti <- function(infiles, outfile, clusters, distance_thresh
     unlink(cov_file)
   }
   
-  methdata = read_meth_file(infiles, hdf5 = hdf5, col_names = col_names)
+  methdata = read_meth_file(infiles, hdf5 = hdf5, colnames = col_names)
 
   if(!is.null(region)){
     region_ii = queryHits(findOverlaps(methdata@rowRanges, makeGRangesFromDataFrame(region), type="within"))
