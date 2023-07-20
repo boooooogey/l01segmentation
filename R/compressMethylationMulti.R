@@ -32,7 +32,7 @@ write_segmented_methylation <- function(segments, file, col_names = FALSE) {
               row.names = FALSE, col.names = col_names)
 }
 
-write_segmented_bsseq <- function(cov, meth, dir) {
+write_segmented_bsseq <- function(cov, met, dir) {
   sample_names <- colnames(cov)[4:ncol(cov)]
 
   pos <- cov[, c(1, 2, 3)]
