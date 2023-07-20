@@ -121,14 +121,6 @@ compressMethylationMulti <- function(infiles, outfile, clusters,
     stop("Length of lambda vector should be equal to the number of unique
      clusters!")
   }
-  meth_file <- paste0(outfile, ".M.bedGraph")
-  cov_file <- paste0(outfile, ".cov.bedGraph")
-  if (file.exists(meth_file)){
-    unlink(meth_file)
-  }
-  if (file.exists(cov_file)){
-    unlink(cov_file)
-  }
 
   methdata <- read_meth_file(infiles, hdf5 = hdf5, colnames = col_names)
 
