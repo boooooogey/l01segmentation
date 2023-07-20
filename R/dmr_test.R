@@ -12,12 +12,12 @@ DMLtest <- function(bsseq, labels, ncores) {
 
   allchr <- as.character(seqnames(bsseq))
   allstart <- start(bsseq)
-  estprob1 <- compute.mean.noSmooth(x1, n1)
-  estprob2 <- compute.mean.noSmooth(x2, n2)
+  estprob1 <- DSS:::compute.mean.noSmooth(x1, n1)
+  estprob2 <- DSS:::compute.mean.noSmooth(x2, n2)
 
   cat("Estimating dispersion for each CpG site, this will take a while ...\n")
-  phi1 <- est.dispersion.BSseq(x1, n1, estprob1, ncores)
-  phi2 <- est.dispersion.BSseq(x2, n2, estprob2, ncores)
+  phi1 <- DSS:::est.dispersion.BSseq(x1, n1, estprob1, ncores)
+  phi2 <- DSS:::est.dispersion.BSseq(x2, n2, estprob2, ncores)
 
   wt1 <- 1 / (1 + (n1 - 1) * phi1)
   wt1 <- wt1 / mean(wt1)
@@ -27,12 +27,12 @@ DMLtest <- function(bsseq, labels, ncores) {
   n1_wt <- n1 * wt1
   x2_wt <- x2 * wt2
   n2_wt <- n2 * wt2
-  estprob1 <- compute.mean.noSmooth(x1_wt, n1_wt)
-  estprob2 <- compute.mean.noSmooth(x2_wt, n2_wt)
-  wald <- waldTest.DML(x1_wt, n1_wt, estprob1, phi1, x2_wt,
-                       n2_wt, estprob2, phi2, smoothing = FALSE,
-                       allchr = allchr,
-                       allpos = allstart)
+  estprob1 <- DSS:::compute.mean.noSmooth(x1_wt, n1_wt)
+  estprob2 <- DSS:::compute.mean.noSmooth(x2_wt, n2_wt)
+  wald <- DSS:::waldTest.DML(x1_wt, n1_wt, estprob1, phi1, x2_wt,
+                             n2_wt, estprob2, phi2, smoothing = FALSE,
+                             allchr = allchr,
+                             allpos = allstart)
   segment_positions <- data.frame(bsseq@rowRanges)
   colnames(segment_positions)[1] <- "chr"
   wald$start <- wald$pos
