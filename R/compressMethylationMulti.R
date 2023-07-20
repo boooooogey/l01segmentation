@@ -63,8 +63,10 @@ combine_two_bp_sets <- function(x, y){
 segment_block_reduce <- function(data, rowp, colp, lambda){
   grid <- ArbitraryArrayGrid(tickmarks = list(rowp, colp))
 
+  number_of_rows <- length(rowp)
   summary_list <- bplapply(seq_along(grid),
     function(b) {
+      lambda_i <- (b-1) %/% number_of_rows + 1
       viewport <- grid[[b]]
       methylation <- rowSums(read_block(data@assays@data$M, viewport))
       coverage <- rowSums(read_block(data@assays@data$Cov, viewport))
@@ -75,7 +77,7 @@ segment_block_reduce <- function(data, rowp, colp, lambda){
       bps <- binomialsegmentation_breakpoints(methylation,
                                               coverage,
                                               start(ranges(viewport))[1] - 1,
-                                              lambda)
+                                              lambda[lambda_i])
       realize(matrix(bps, ncol = 1), BACKEND = "HDF5Array")
     }
   )
@@ -112,6 +114,13 @@ compressMethylationMulti <- function(infiles, outfile, clusters,
                                      distance_threshold, lambda,
                                      col_names = NULL, region = NULL,
                                      hdf5 = NULL) {
+  num_of_clusters <- length(unique(clusters))
+  if (length(lambda) == 1) {
+    lambda <- rep(lambda, num_of_clusters)
+  } else if (length(lambda) != num_of_clusters) {
+    stop("Length of lambda vector should be equal to the number of unique
+     clusters!")
+  }
   meth_file <- paste0(outfile, ".M.bedGraph")
   cov_file <- paste0(outfile, ".cov.bedGraph")
   if (file.exists(meth_file)){
