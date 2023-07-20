@@ -47,7 +47,7 @@ write_segmented_bsseq <- function(cov, met, dir) {
   saveHDF5SummarizedExperiment(bsseq_obj, dir = dir)
 }
 
-binomialsegmentation_breakpoints <- function(meth, cov, offset, lambda){
+binomialsegmentation_breakpoints <- function(meth, cov, offset, lambda) {
   segments <- fusedsegmentation(meth,
                                 C = cov,
                                 lambda2 = lambda,
