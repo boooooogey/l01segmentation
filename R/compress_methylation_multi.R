@@ -155,7 +155,7 @@ cluster_methylation <- function(infiles,
                      type = "Cov",
                      what = "perRegionTotal")
 
-  usable_sites <- which(apply(cov, 1, function(x) !all(is.na(x))))
+  usable_sites <- which(apply(cov, 1, function(x) !any(is.na(x) | (x == 0))))
   if (length(usable_sites) == 0) {
     stop("Not enough sites with coverage. Please specify a bigger region.")
   }
