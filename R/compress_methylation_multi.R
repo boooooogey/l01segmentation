@@ -169,7 +169,7 @@ cluster_methylation <- function(infiles,
 
   cat("Clustering the samples...\n")
   cat("Calculating BIC...\n")
-  bic <- mclustBIC(beta)
+  bic <- mclustBIC(beta, G = 1:round(nrow(beta) / 2))
   cat("Running EM algorithm...\n")
   gmm <- Mclust(beta, x = bic)
   gmm
