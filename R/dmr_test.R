@@ -1,6 +1,6 @@
 # DMLtest from DSS package modified to work with segmented data.
 # github.com/haowulab/DSS/blob/7b6a3c4563827406b87dc60c3475bd919c9b48b2/R/DML.R#L11
-DMLtest <- function(bsseq, labels, ncores) {
+dml_test <- function(bsseq, labels, ncores) {
 
   x <- as.array(getCoverage(bsseq, type = "M"))
   n <- as.array(getCoverage(bsseq, type = "Cov"))

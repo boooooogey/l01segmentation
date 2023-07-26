@@ -1,4 +1,4 @@
-read_meth_file <- function(file, workers = 8, hdf5 = NULL, colnames = NULL) {
+read_meth_file <- function(file, workers = 8, hdf5 = NULL, col_names = NULL) {
   bpparam <- BiocParallel::MulticoreParam(progressbar = TRUE, workers = workers)
 
   if (is.null(hdf5)) {
@@ -7,14 +7,14 @@ read_meth_file <- function(file, workers = 8, hdf5 = NULL, colnames = NULL) {
     return(HDF5Array::loadHDF5SummarizedExperiment(dir = hdf5))
   }
 
-  if (is.null(colnames)) {
-    colnames <- data.frame(row.names = seq_along(file))
+  if (is.null(col_names)) {
+    col_names <- data.frame(row.names = seq_along(file))
   } else {
-    colnames <- data.frame(row.names = colnames)
+    col_names <- data.frame(row.names = col_names)
   }
 
   methfile <- read.bismark(files = file,
-                           colData = colnames,
+                           colData = col_names,
                            rmZeroCov = TRUE,
                            verbose = TRUE,
                            BPPARAM = bpparam,
@@ -47,7 +47,7 @@ write_segmented_bsseq <- function(cov, met, dir) {
   saveHDF5SummarizedExperiment(bsseq_obj, dir = dir)
 }
 
-binomialsegmentation_breakpoints <- function(meth, cov, offset, lambda) {
+binom_seg_bp <- function(meth, cov, offset, lambda) {
   segments <- fusedsegmentation(meth,
                                 C = cov,
                                 lambda2 = lambda,
@@ -74,10 +74,10 @@ segment_block_reduce <- function(data, rowp, colp, lambda){
         return(realize(matrix(end(ranges(viewport))[1], ncol = 1),
                        BACKEND = "HDF5Array"))
       coverage[coverage == 0] <- 1
-      bps <- binomialsegmentation_breakpoints(methylation,
-                                              coverage,
-                                              start(ranges(viewport))[1] - 1,
-                                              lambda[lambda_i])
+      bps <- binom_seg_bp(methylation,
+                          coverage,
+                          start(ranges(viewport))[1] - 1,
+                          lambda[lambda_i])
       realize(matrix(bps, ncol = 1), BACKEND = "HDF5Array")
     }
   )
@@ -85,10 +85,11 @@ segment_block_reduce <- function(data, rowp, colp, lambda){
 }
 
 format_segments <- function(ranges, chrom_end_points, breakpoints) {
-  segments <- data.frame(chrom = seqnames(ranges)[breakpoints],
-                         start = c(start(ranges)[1],
+  segments <-
+    data.frame(chrom = seqnames(ranges)[breakpoints],
+               start = c(start(ranges)[1],
                    1 + start(ranges)[breakpoints[1:(length(breakpoints) - 1)]]),
-                         end = start(ranges)[breakpoints])
+               end = start(ranges)[breakpoints])
 
   segments_chrom_splits <-
     cumsum(
@@ -110,10 +111,74 @@ aggregate_meth_data <- function(data, segments, meth_colnames, type) {
   cbind(segments, out)
 }
 
-compressMethylationMulti <- function(infiles, outfile, clusters,
-                                     distance_threshold, lambda,
-                                     col_names = NULL, region = NULL,
-                                     hdf5 = NULL) {
+cluster_methylation_clusters <- function(infiles,
+                                         hdf5 = NULL,
+                                         regions = NULL,
+                                         chrom = NULL,
+                                         start = NULL,
+                                         end = NULL,
+                                         col_names = NULL,
+                                         binwidth = NULL) {
+  if (!is.null(regions)) {
+    if (class(regions) != "GRanges"){
+      stop("regions should be GRanges.")
+    }
+    cat("Regions are given. Clustering will be done over the given regions!\n")
+  } else if (is.null(start) || is.null(end) || is.null(chrom)){
+    stop(paste("Either user-defined regions should be given through 'regions'",
+               "argument or a genomic region should be deliminated through",
+               "'chrom', 'start', and 'end' arguments."))
+  } else {
+    cat(paste0("Using genomic region: ", chrom, ": ", start, " - ", end, "\n"))
+    breakpoints <- seq(start - 1, end, by = binwidth)
+    if (breakpoints[length(breakpoints)] != end)
+      breakpoints <- c(breakpoints, end)
+
+    region_start <- breakpoints[1:(length(breakpoints) - 1)] + 1
+    region_end <- breakpoints[2:length(breakpoints)]
+
+    regions <- GRanges(data.frame(chr = chrom,
+                                  start = region_start,
+                                  end = region_end))
+  }
+
+  cat("Loading the data...\n")
+  methdata <- read_meth_file(infiles, hdf5 = hdf5, colnames = col_names)
+
+  met <- getCoverage(methdata,
+                     regions = regions,
+                     type = "M",
+                     what = "perRegionTotal")
+
+  cov <- getCoverage(methdata,
+                     regions = regions,
+                     type = "Cov",
+                     what = "perRegionTotal")
+
+  usable_sites <- which(apply(cov, 1, function(x) !all(is.na(x))))
+  if (length(usable_sites) == 0) {
+    stop("Not enough sites with coverage. Please specify a bigger region.")
+  }
+
+  cat(paste0("The total number of sites with coverage: ",
+             length(usable_sites), "\n"))
+
+  beta <- met[usable_sites, ] / cov[usable_sites, ]
+
+  beta <- t(beta)
+
+  cat("Clustering the samples...\n")
+  cat("Calculating BIC...\n")
+  bic <- mclustBIC(beta)
+  cat("Running EM algorithm...\n")
+  gmm <- Mclust(beta, x = bic)
+  gmm
+}
+
+compress_methylation_multi <- function(infiles, outfile, clusters,
+                                       distance_threshold, lambda,
+                                       col_names = NULL, region = NULL,
+                                       hdf5 = NULL) {
   num_of_clusters <- length(unique(clusters))
   if (length(lambda) == 1) {
     lambda <- rep(lambda, num_of_clusters)
@@ -122,7 +187,7 @@ compressMethylationMulti <- function(infiles, outfile, clusters,
      clusters!")
   }
 
-  methdata <- read_meth_file(infiles, hdf5 = hdf5, colnames = col_names)
+  methdata <- read_meth_file(infiles, hdf5 = hdf5, col_names = col_names)
 
   if (!is.null(region)) {
     region_ii <-
@@ -158,7 +223,5 @@ compressMethylationMulti <- function(infiles, outfile, clusters,
   meth_out <- aggregate_meth_data(methdata, segments, infiles, "M")
   cov_out <- aggregate_meth_data(methdata, segments, infiles, "Cov")
 
-  #write_segmented_methylation(meth_out, meth_file, col.names = TRUE)
-  #write_segmented_methylation(cov_out, cov_file, col.names = TRUE)
   write_segmented_bsseq(cov_out, meth_out, paste0(outfile, ".bsseq"))
 }
