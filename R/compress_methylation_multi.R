@@ -111,14 +111,14 @@ aggregate_meth_data <- function(data, segments, meth_colnames, type) {
   cbind(segments, out)
 }
 
-cluster_methylation_clusters <- function(infiles,
-                                         hdf5 = NULL,
-                                         regions = NULL,
-                                         chrom = NULL,
-                                         start = NULL,
-                                         end = NULL,
-                                         col_names = NULL,
-                                         binwidth = NULL) {
+cluster_methylation <- function(infiles,
+                                hdf5 = NULL,
+                                regions = NULL,
+                                chrom = NULL,
+                                start = NULL,
+                                end = NULL,
+                                col_names = NULL,
+                                binwidth = NULL) {
   if (!is.null(regions)) {
     if (class(regions) != "GRanges"){
       stop("regions should be GRanges.")
@@ -143,7 +143,7 @@ cluster_methylation_clusters <- function(infiles,
   }
 
   cat("Loading the data...\n")
-  methdata <- read_meth_file(infiles, hdf5 = hdf5, colnames = col_names)
+  methdata <- read_meth_file(infiles, hdf5 = hdf5, col_names = col_names)
 
   met <- getCoverage(methdata,
                      regions = regions,
