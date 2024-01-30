@@ -9,10 +9,6 @@ L1BinomialApproximateCondensed <- function(M, C, lambda) {
     .Call(`_l01segmentation_L1BinomialApproximateCondensed`, M, C, lambda)
 }
 
-blockcoordinatedescent <- function(Yhat, lambda, w, mintimer = 5, tol = 1e-6) {
-    .Call(`_l01segmentation_blockcoordinatedescent`, Yhat, lambda, w, mintimer, tol)
-}
-
 combine_two_bp_sets_ <- function(x, y) {
     .Call(`_l01segmentation_combine_two_bp_sets_`, x, y)
 }

@@ -37,21 +37,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// blockcoordinatedescent
-List blockcoordinatedescent(const arma::mat& Yhat, const double& lambda, const arma::vec& w, const double mintimer, const double tol);
-RcppExport SEXP _l01segmentation_blockcoordinatedescent(SEXP YhatSEXP, SEXP lambdaSEXP, SEXP wSEXP, SEXP mintimerSEXP, SEXP tolSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type Yhat(YhatSEXP);
-    Rcpp::traits::input_parameter< const double& >::type lambda(lambdaSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type w(wSEXP);
-    Rcpp::traits::input_parameter< const double >::type mintimer(mintimerSEXP);
-    Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
-    rcpp_result_gen = Rcpp::wrap(blockcoordinatedescent(Yhat, lambda, w, mintimer, tol));
-    return rcpp_result_gen;
-END_RCPP
-}
 // combine_two_bp_sets_
 std::set<int> combine_two_bp_sets_(IntegerVector x, IntegerVector y);
 RcppExport SEXP _l01segmentation_combine_two_bp_sets_(SEXP xSEXP, SEXP ySEXP) {
@@ -388,7 +373,6 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_l01segmentation_L1BinomialApproximate", (DL_FUNC) &_l01segmentation_L1BinomialApproximate, 3},
     {"_l01segmentation_L1BinomialApproximateCondensed", (DL_FUNC) &_l01segmentation_L1BinomialApproximateCondensed, 3},
-    {"_l01segmentation_blockcoordinatedescent", (DL_FUNC) &_l01segmentation_blockcoordinatedescent, 5},
     {"_l01segmentation_combine_two_bp_sets_", (DL_FUNC) &_l01segmentation_combine_two_bp_sets_, 2},
     {"_l01segmentation_L0PoissonApproximate", (DL_FUNC) &_l01segmentation_L0PoissonApproximate, 3},
     {"_l01segmentation_L0GaussianApproximate", (DL_FUNC) &_l01segmentation_L0GaussianApproximate, 3},
