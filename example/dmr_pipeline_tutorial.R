@@ -4,11 +4,13 @@ library(l01segmentation)
 # rent segments.
 distance_threshold <- 10000
 
-hdf5_file <- "P0_FB_vs_LV_segmentation_chrom2"
+
+outdir <- ".local"
 
 outfile <- "P0_FB_vs_LV_chrom2"
+hdf5_file <- file.path(outdir, "P0_FB_vs_LV_segmentation_chrom2")
 
-input_folder <- "./dmr_pipeline_data"
+input_folder <- "example/dmr_pipeline_data"
 files <- file.path(input_folder, c("mc_P0_FB_1_2.txt.gz",
                                    "mc_P0_FB_2_2.txt.gz",
                                    "mc_P0_LV_1_2.txt.gz",
@@ -34,7 +36,7 @@ gmm <- cluster_methylation(infiles = files,
 # Combined L0 segmentation of all labels from GMM clustering. Segmentation is
 # stored as Bismark objects in hdf5 files.
 compress_methylation_multi(infiles = files, 
-                           outfile = paste0(outfile, "_", lambda), 
+                           outfile = file.path(outdir, paste0(outfile, "_", lambda)), 
                            clusters = gmm$classification, 
                            distance_threshold = distance_threshold, 
                            lambda = lambda, 
@@ -42,11 +44,11 @@ compress_methylation_multi(infiles = files,
                            hdf5 = hdf5_file)
                          
 # Load the L0 segmentation from the hdf5 file
-bsseq_segmented <- HDF5Array::loadHDF5SummarizedExperiment(dir = paste0(outfile,
-                                                                        "_",
-                                                                        lambda,
-                                                                        ".bsseq"
-                                                                        ))
+bsseq_segmented <- HDF5Array::loadHDF5SummarizedExperiment(dir = file.path(outdir, paste0(outfile,
+                                                                                          "_",
+                                                                                          lambda,
+                                                                                          ".bsseq"
+                                                                                          )))
 
 # Define groups for DML test
 groups <- grepl("FB", colnames(bsseq_segmented)) * 1 +
@@ -59,5 +61,5 @@ pvals <- l01segmentation::dml_test(bsseq_segmented, as.integer(groups), ncores =
 
 # Write p values in a file
 write.table(x = pvals,
-            file = paste0("LV_vs_FB_dmrs_chr", chrom, "_", lambda, ".tsv"),
+            file = file.path(outdir, paste0("LV_vs_FB_dmrs_chr", chrom, "_", lambda, ".tsv")),
             sep="\t", quote = F, row.names = F, col.names = T)
