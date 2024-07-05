@@ -16,8 +16,12 @@ dml_test <- function(bsseq, labels, ncores) {
   estprob2 <- DSS:::compute.mean.noSmooth(x2, n2)
 
   cat("Estimating dispersion for each CpG site, this will take a while ...\n")
-  phi1 <- DSS:::est.dispersion.BSseq(x1, n1, estprob1, ncores)
-  phi2 <- DSS:::est.dispersion.BSseq(x2, n2, estprob2, ncores)
+  cat(ncores)
+  cat("\n")
+  #phi1 <- DSS:::est.dispersion.BSseq(x1, n1, estprob1, ncores)
+  phi1 <- est.dispersion.BSseq(x1, n1, estprob1, ncores)
+  #phi2 <- DSS:::est.dispersion.BSseq(x2, n2, estprob2, ncores)
+  phi2 <- est.dispersion.BSseq(x2, n2, estprob2, ncores)
 
   wt1 <- 1 / (1 + (n1 - 1) * phi1)
   wt1 <- wt1 / mean(wt1)
