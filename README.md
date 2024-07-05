@@ -82,3 +82,58 @@ compressBigwigbyBinning("pol2.bw", "pol2_bin.bedGraph", bin = 10000)
 **Figure:**
 ![github_igv](https://user-images.githubusercontent.com/15932827/189454800-ea22ac5f-8e0c-442c-bed0-81349c8b496d.png)
 
+## DMR pipeline
+Example run for 4 methylation files, two for two different tissue each, forebrain(FB) and liver(LV). The format of the methylation files is, chromosome position strand dinucleotide methylated unmethylated, as shown below:
+```
+2	3050516	+	CG	18	3
+2	3050517	-	CG	6	2
+2	3051115	+	CG	8	5
+2	3051206	+	CG	6	1
+2	3051207	-	CG	2	2
+```
+We can use the tissue labels directly, or we can use GMM to cluster the samples if the labels are unknown.
+```
+gmm <- cluster_methylation(infiles = files,
+                           hdf5 = hdf5_file,
+                           chrom = chrom,
+                           start = 1000000,
+                           end = 10000000,
+                           binwidth = 10000,
+                           col_names = names)
+```
+Here, `files` are a list of paths to methylation files, such as
+```
+files <- file.path(input_folder, c("mc_P0_FB_1_2.txt.gz",
+                                   "mc_P0_FB_2_2.txt.gz",
+                                   "mc_P0_LV_1_2.txt.gz",
+                                   "mc_P0_LV_2_2.txt.gz"))
+```
+After reading methylation files, `cluster_methylation` saves the `bsseq` object to `hdf5_file`. Using the labels, `compress_methylation_multi` identifies breakpoints from the methylation profiles by aggregating methylation reads from assays with the same labels. These breakpoints are then combined to create a unified segmentation for all the profiles.
+```
+compress_methylation_multi(infiles = files, 
+                           outfile = paste0(outfile, "_", lambda), 
+                           clusters = gmm$classification, 
+                           distance_threshold = distance_threshold, 
+                           lambda = lambda, 
+                           col_names = names,
+                           hdf5 = hdf5_file)
+```
+If two positions end up in the same segment but the distance between them is greater than `distance_threshold`, they are separated into two different segments. Finally, the segmentation, written as another `bsseq` object, is read, and the DML test from `DSS` is applied to the segments.
+```
+bsseq_segmented <- HDF5Array::loadHDF5SummarizedExperiment(dir = paste0(outfile,
+                                                                        "_",
+                                                                        lambda,
+                                                                        ".bsseq"
+                                                                        ))
+
+groups <- grepl("FB", colnames(bsseq_segmented)) * 1 +
+           grepl("LV", colnames(bsseq_segmented)) * 2
+
+number_of_cores <- 1L
+
+pvals <- l01segmentation::dml_test(bsseq_segmented, as.integer(groups), ncores = number_of_cores)
+
+write.table(x = pvals,
+            file = paste0("LV_vs_FB_dmrs_chr", chrom, "_", lambda, ".tsv"),
+            sep="\t", quote = F, row.names = F, col.names = T)
+```
