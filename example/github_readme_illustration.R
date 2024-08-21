@@ -30,7 +30,3 @@ p3 <- plot_track(
     format = "full"
   )
 )
-
-png("out.png")
-p3
-dev.off()
